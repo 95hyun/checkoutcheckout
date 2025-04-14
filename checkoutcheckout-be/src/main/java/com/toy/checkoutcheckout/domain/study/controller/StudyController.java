@@ -2,7 +2,7 @@ package com.toy.checkoutcheckout.domain.study.controller;
 
 import com.toy.checkoutcheckout.domain.study.dto.*;
 import com.toy.checkoutcheckout.domain.study.service.StudyService;
-import com.toy.checkoutcheckout.global.CurrentUser;
+import com.toy.checkoutcheckout.global.auth.CurrentUser;
 import com.toy.checkoutcheckout.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,7 +72,7 @@ public class StudyController {
     public ResponseEntity<ApiResponse<Void>> joinStudy(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable Long studyId,
-            @RequestBody(required = false) StudyJoinRequest request) {
+            @RequestBody(required = false) StudyJoinRequestDto request) {
         // 비밀번호가 필요한 경우에만 request가 필요하므로 null 허용
         studyService.joinStudy(currentUser.getUserId(), studyId, request);
         return ResponseEntity.ok(ApiResponse.success(null));

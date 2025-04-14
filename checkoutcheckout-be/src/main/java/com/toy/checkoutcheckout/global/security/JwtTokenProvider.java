@@ -36,8 +36,9 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        key = Keys.hmacShaKeyFor(encodedKey.getBytes());
+        // 키 생성 방식 수정: secretKey를 Base64로 인코딩한 후 바로 hmacShaKeyFor 사용
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String createToken(String email) {
@@ -55,7 +56,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(getEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     public String getEmail(String token) {
@@ -69,21 +70,47 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        if (bearerToken == null) {
+            log.debug("Authorization header is missing");
+            return null;
+        } 
+        
+        if (!bearerToken.startsWith("Bearer ")) {
+            log.debug("Authorization header does not start with Bearer: {}", bearerToken);
+            return null;
         }
-        return null;
+        
+        String token = bearerToken.substring(7);
+        log.debug("Extracted token: {}", token);
+        return token;
     }
 
     public boolean validateToken(String token) {
+        if (token == null) {
+            log.error("Token is null");
+            return false;
+        }
+        
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token format: {}", e.getMessage());
+            return false;
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+            return false;
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+            return false;
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
+            return false;
+        } catch (JwtException e) {
+            log.error("JWT token validation error: {}", e.getMessage());
             return false;
         }
     }

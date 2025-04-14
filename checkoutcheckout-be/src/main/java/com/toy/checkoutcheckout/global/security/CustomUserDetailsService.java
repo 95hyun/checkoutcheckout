@@ -2,6 +2,7 @@ package com.toy.checkoutcheckout.global.security;
 
 import com.toy.checkoutcheckout.domain.user.entity.User;
 import com.toy.checkoutcheckout.domain.user.repository.UserRepository;
+import com.toy.checkoutcheckout.global.auth.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        
+        return new CurrentUser(user);
     }
 }

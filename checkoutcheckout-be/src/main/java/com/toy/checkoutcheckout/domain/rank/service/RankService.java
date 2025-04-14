@@ -4,7 +4,6 @@ import com.toy.checkoutcheckout.domain.rank.dto.DailyRankingResponse;
 import com.toy.checkoutcheckout.domain.rank.dto.StudyMemberRankingResponse;
 import com.toy.checkoutcheckout.domain.rank.dto.StudyRankingResponse;
 import com.toy.checkoutcheckout.domain.study.entity.Study;
-import com.toy.checkoutcheckout.domain.study.entity.StudyMember;
 import com.toy.checkoutcheckout.domain.study.repository.StudyMemberRepository;
 import com.toy.checkoutcheckout.domain.study.repository.StudyRepository;
 import com.toy.checkoutcheckout.domain.timer.repository.TimerSessionRepository;
@@ -14,12 +13,6 @@ import com.toy.checkoutcheckout.global.exception.ForbiddenException;
 import com.toy.checkoutcheckout.global.exception.NotFoundException;
 import com.toy.checkoutcheckout.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

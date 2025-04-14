@@ -178,7 +178,7 @@ public class StudyService {
     }
 
     @Transactional
-    public void joinStudy(Long userId, Long studyId, com.toy.checkoutcheckout.domain.study.dto.StudyJoinRequest request) {
+    public void joinStudy(Long userId, Long studyId, StudyJoinRequestDto request) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NotFoundException("스터디를 찾을 수 없습니다."));
 
@@ -203,7 +203,7 @@ public class StudyService {
 
         // 비밀번호 확인
         if (study.getIsPasswordProtected()) {
-            if (request.getPassword() == null || !passwordEncoder.matches(request.getPassword(), study.getPassword())) {
+            if (request == null || request.getPassword() == null || !passwordEncoder.matches(request.getPassword(), study.getPassword())) {
                 throw new BadRequestException("비밀번호가 일치하지 않습니다.");
             }
         }
