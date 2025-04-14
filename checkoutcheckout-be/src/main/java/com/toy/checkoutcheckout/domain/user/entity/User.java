@@ -36,6 +36,10 @@ public class User implements UserDetails {
     private String nickname;
 
     private String profileImage;
+    
+    // 현재 사용자의 캐릭터 타입 (character는 MySQL 예약어이므로 characterType으로 변경)
+    @Column(name = "character_type")
+    private String characterType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -46,6 +50,21 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+    
+    // 캐릭터 설정 메서드
+    public void setCharacterType(String characterType) {
+        this.characterType = characterType;
+    }
+    
+    // 이전 메서드와의 호환성을 위한 메서드
+    public String getCharacter() {
+        return this.characterType;
+    }
+    
+    // 이전 메서드와의 호환성을 위한 메서드
+    public void setCharacter(String character) {
+        this.characterType = character;
+    }
 
     @PrePersist
     public void prePersist() {

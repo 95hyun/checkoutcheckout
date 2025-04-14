@@ -1,0 +1,32 @@
+/* 캐릭터 이미지 스타일 */
+.character-cleric {
+  background-image: url('/characters/checkout_char_1_girl_healer.png');
+}
+
+.character-knight {
+  background-image: url('/characters/checkout_char_2_girl_knight.png');
+}
+
+.character-dwarf {
+  background-image: url('/characters/checkout_char_3_man_axe.png');
+}
+
+.character-demonFemale {
+  background-image: url('/characters/dcheckout_char_4_girl_devil.png');
+}
+
+.character-demonMale {
+  background-image: url('/characters/checkout_char_5_man_devil.png');
+}
+
+.character-wizard {
+  background-image: url('/characters/checkout_char_6_girl_magi.png');
+}
+
+.character-image {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}

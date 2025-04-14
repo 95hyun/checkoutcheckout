@@ -1,14 +1,15 @@
 import React from 'react';
-import { RankEntry } from '../types';
+import { RankEntry, StudyRankEntry } from '../types';
 import { formatSecondsToReadable } from '../utils/timeUtils';
-import { FaMedal, FaTrophy } from 'react-icons/fa';
+import { FaMedal, FaTrophy, FaUsers } from 'react-icons/fa';
 
 interface RankingTableProps {
-  rankings: RankEntry[];
-  currentUserId?: number;
+  rankings: RankEntry[] | StudyRankEntry[];
+  currentUserId?: number | null;
+  isStudyRanking?: boolean;
 }
 
-const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId }) => {
+const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, isStudyRanking = false }) => {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -31,7 +32,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId }) 
               순위
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              닉네임
+              {isStudyRanking ? '스터디명' : '닉네임'}
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               공부 시간
@@ -39,32 +40,44 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId }) 
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {rankings.map((entry) => (
-            <tr 
-              key={entry.userId}
-              className={currentUserId === entry.userId ? 'bg-blue-50' : ''}
-            >
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div className="flex items-center">
-                  {getRankIcon(entry.rank)}
-                  <span className={entry.rank <= 3 ? 'ml-2 font-bold' : 'ml-2'}>
-                    {entry.rank}
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                {entry.nickname}
-                {currentUserId === entry.userId && (
-                  <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                    나
-                  </span>
-                )}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                {formatSecondsToReadable(entry.studyTime)}
-              </td>
-            </tr>
-          ))}
+          {rankings.map((entry) => {
+            const isCurrentUser = !isStudyRanking && currentUserId === (entry as RankEntry).userId;
+            const userId = isStudyRanking ? (entry as StudyRankEntry).studyId : (entry as RankEntry).userId;
+            const name = isStudyRanking ? (entry as StudyRankEntry).studyName : (entry as RankEntry).nickname;
+            const studyTime = isStudyRanking 
+              ? (entry as StudyRankEntry).formattedStudyTime 
+              : formatSecondsToReadable((entry as RankEntry).studyTime);
+            
+            return (
+              <tr 
+                key={userId}
+                className={isCurrentUser ? 'bg-blue-50' : ''}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div className="flex items-center">
+                    {getRankIcon(entry.rank)}
+                    <span className={entry.rank <= 3 ? 'ml-2 font-bold' : 'ml-2'}>
+                      {entry.rank}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <div className="flex items-center">
+                    {isStudyRanking && <FaUsers className="text-primary mr-2" />}
+                    <span>{name}</span>
+                    {isCurrentUser && (
+                      <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                        나
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {studyTime}
+                </td>
+              </tr>
+            );
+          })}
           
           {rankings.length === 0 && (
             <tr>
@@ -78,5 +91,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId }) 
     </div>
   );
 };
+
+export default RankingTable;
 
 export default RankingTable;

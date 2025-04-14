@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
-import { FaClock, FaChartBar, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { FaClock, FaChartBar, FaSignOutAlt, FaUser, FaUsers } from 'react-icons/fa';
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, user } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -43,6 +43,12 @@ const Navbar: React.FC = () => {
                 >
                   <FaChartBar className="mr-1" /> 랭킹
                 </Link>
+                <Link
+                  to="/studies"
+                  className="border-transparent text-gray-500 hover:border-primary hover:text-primary inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >
+                  <FaUsers className="mr-1" /> 스터디
+                </Link>
               </div>
             )}
           </div>
@@ -50,15 +56,22 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
+                {user && (
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.nickname}님 오늘도 열심히!
+                  </span>
+                )}
                 <Link
                   to="/profile"
                   className="text-gray-500 hover:text-primary"
+                  title="마이페이지"
                 >
                   <FaUser />
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="text-gray-500 hover:text-primary"
+                  title="로그아웃"
                 >
                   <FaSignOutAlt />
                 </button>
@@ -85,5 +98,7 @@ const Navbar: React.FC = () => {
     </nav>
   );
 };
+
+export default Navbar;
 
 export default Navbar;

@@ -82,7 +82,7 @@ export const useTimer = () => {
     return () => {
       clearTimerInterval();
     };
-  }, []); // 의존성 배열 비움 - 마운트 시 한 번만 실행
+  }, [clearLocalTimerData, clearTimerInterval]); // 의존성 배열 추가
 
   // 시작하기 버튼 핸들러
   const handleStartTimer = useCallback(async () => {

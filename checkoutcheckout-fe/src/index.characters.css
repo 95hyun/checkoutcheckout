@@ -1,0 +1,37 @@
+/**
+ * 이 파일은 public 폴더의 캐릭터 이미지를 가져오는 CSS 스타일을 정의합니다.
+ * 캐릭터 이미지는 /characters/ 경로에 있어야 합니다.
+ * 예) /characters/cleric.png
+ */
+.character-cleric {
+  background-image: url('/characters/cleric.png');
+}
+
+.character-knight {
+  background-image: url('/characters/knight.png');
+}
+
+.character-dwarf {
+  background-image: url('/characters/dwarf.png');
+}
+
+.character-demonFemale {
+  background-image: url('/characters/demon-female.png');
+}
+
+.character-demonMale {
+  background-image: url('/characters/demon-male.png');
+}
+
+.character-wizard {
+  background-image: url('/characters/wizard.png');
+}
+
+.character-image {
+  width: 100%;
+  height: 100%;
+  background-color: #fff8dc;
+  background-size: contain; 
+  background-position: center;
+  background-repeat: no-repeat;
+}

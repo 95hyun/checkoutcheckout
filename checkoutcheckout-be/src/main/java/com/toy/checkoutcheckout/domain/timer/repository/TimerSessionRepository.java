@@ -36,4 +36,62 @@ public interface TimerSessionRepository extends JpaRepository<TimerSession, Long
            "GROUP BY t.user.id, t.user.nickname " +
            "ORDER BY totalDuration DESC")
     List<Object[]> findDailyRankingByDate(@Param("date") LocalDate date);
+    
+    // 스터디 회원들의 일일 랭킹
+    @Query("SELECT t.user.id, t.user.nickname, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE t.sessionDate = :date AND sm.study.id = :studyId " +
+           "GROUP BY t.user.id, t.user.nickname " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findDailyRankingByDateAndStudy(@Param("date") LocalDate date, @Param("studyId") Long studyId);
+    
+    // 스터디 회원들의 주간 랭킹
+    @Query("SELECT t.user.id, t.user.nickname, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE t.sessionDate BETWEEN :startDate AND :endDate AND sm.study.id = :studyId " +
+           "GROUP BY t.user.id, t.user.nickname " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findWeeklyRankingByDateRangeAndStudy(@Param("startDate") LocalDate startDate, 
+                                                     @Param("endDate") LocalDate endDate, 
+                                                     @Param("studyId") Long studyId);
+    
+    // 스터디 회원들의 월간 랭킹
+    @Query("SELECT t.user.id, t.user.nickname, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE YEAR(t.sessionDate) = :year AND MONTH(t.sessionDate) = :month AND sm.study.id = :studyId " +
+           "GROUP BY t.user.id, t.user.nickname " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findMonthlyRankingByYearMonthAndStudy(@Param("year") int year, 
+                                                      @Param("month") int month, 
+                                                      @Param("studyId") Long studyId);
+    
+    // 전체 스터디 랭킹 (스터디별 누적 시간)
+    @Query("SELECT sm.study.id, sm.study.name, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE t.sessionDate = :date " +
+           "GROUP BY sm.study.id, sm.study.name " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findDailyStudyRanking(@Param("date") LocalDate date);
+    
+    // 주간 스터디 랭킹
+    @Query("SELECT sm.study.id, sm.study.name, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE t.sessionDate BETWEEN :startDate AND :endDate " +
+           "GROUP BY sm.study.id, sm.study.name " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findWeeklyStudyRanking(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    // 월간 스터디 랭킹
+    @Query("SELECT sm.study.id, sm.study.name, SUM(t.duration) as totalDuration " +
+           "FROM TimerSession t " +
+           "JOIN StudyMember sm ON t.user = sm.user " +
+           "WHERE YEAR(t.sessionDate) = :year AND MONTH(t.sessionDate) = :month " +
+           "GROUP BY sm.study.id, sm.study.name " +
+           "ORDER BY totalDuration DESC")
+    List<Object[]> findMonthlyStudyRanking(@Param("year") int year, @Param("month") int month);
 }
