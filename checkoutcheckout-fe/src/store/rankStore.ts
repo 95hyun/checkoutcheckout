@@ -23,7 +23,7 @@ const useRankStore = create<RankStore>((set) => ({
     } catch (error) {
       console.error('Failed to fetch daily ranking:', error);
       set({ 
-        error: 'Failed to fetch daily ranking', 
+        error: '랭킹 데이터를 불러오는데 실패했습니다.', 
         isLoading: false 
       });
     }

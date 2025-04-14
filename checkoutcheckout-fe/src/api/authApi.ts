@@ -3,18 +3,18 @@ import { LoginRequest, SignupRequest, TokenResponse, User } from '../types';
 
 export const authApi = {
   login: async (loginRequest: LoginRequest): Promise<TokenResponse> => {
-    const response = await apiClient.post<TokenResponse>('/auth/login', loginRequest);
-    return response.data;
+    const response = await apiClient.post<{data: TokenResponse}>('/api/auth/login', loginRequest);
+    return response.data.data;
   },
   
   signup: async (signupRequest: SignupRequest): Promise<void> => {
-    await apiClient.post('/auth/signup', signupRequest);
+    await apiClient.post('/api/auth/signup', signupRequest);
   },
   
   getCurrentUser: async (): Promise<User> => {
     try {
-      const response = await apiClient.get<User>('/auth/me');
-      return response.data;
+      const response = await apiClient.get<{data: User}>('/api/auth/me');
+      return response.data.data;
     } catch (error) {
       console.warn('Failed to fetch user from backend. Using local storage fallback.');
       

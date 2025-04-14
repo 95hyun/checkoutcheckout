@@ -45,7 +45,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
             const userId = isStudyRanking ? (entry as StudyRankEntry).studyId : (entry as RankEntry).userId;
             const name = isStudyRanking ? (entry as StudyRankEntry).studyName : (entry as RankEntry).nickname;
             const studyTime = isStudyRanking 
-              ? (entry as StudyRankEntry).formattedStudyTime 
+              ? (entry as StudyRankEntry).formattedStudyTime || formatSecondsToReadable((entry as StudyRankEntry).studyTime / 1000)
               : formatSecondsToReadable((entry as RankEntry).studyTime);
             
             return (
@@ -81,8 +81,16 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
           
           {rankings.length === 0 && (
             <tr>
-              <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
-                랭킹 데이터가 없습니다.
+              <td colSpan={3} className="px-6 py-12 text-center text-sm text-gray-500">
+                <div className="flex flex-col items-center justify-center">
+                  <FaTrophy className="text-3xl text-gray-300 mb-2" />
+                  <p>랭킹 데이터가 없습니다.</p>
+                  <p className="text-xs mt-1">
+                    {isStudyRanking 
+                      ? '아직 등록된 스터디가 없거나 스터디 활동이 없습니다.' 
+                      : '해당 기간에 공부 기록이 없습니다.'}
+                  </p>
+                </div>
               </td>
             </tr>
           )}
@@ -91,7 +99,5 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
     </div>
   );
 };
-
-export default RankingTable;
 
 export default RankingTable;

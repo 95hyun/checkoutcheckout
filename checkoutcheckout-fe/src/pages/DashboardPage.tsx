@@ -15,9 +15,24 @@ const characterImages = {
   'cleric': '클레릭', // 성직자
   'knight': '기사',
   'dwarf': '드워프',
-  'demonFemale': '여성 악마',
-  'demonMale': '남성 악마',
-  'wizard': '마법사'
+  'demonfemale': '여성 악마',
+  'demonmale': '남성 악마',
+  'wizard': '마법사',
+  'shield': '방패병',
+  'captain': '캡틴',
+  'archer': '궁수',
+  'assassin': '암살자',
+  // 대문자 버전 추가
+  'CLERIC': '클레릭',
+  'KNIGHT': '기사',
+  'DWARF': '드워프',
+  'DEMON_FEMALE': '여성 악마',
+  'DEMON_MALE': '남성 악마',
+  'WIZARD': '마법사',
+  'SHIELD': '방패병',
+  'CAPTAIN': '캡틴',
+  'ARCHER': '궁수',
+  'ASSASSIN': '암살자'
 };
 
 const DashboardPage: React.FC = () => {
@@ -77,14 +92,12 @@ const DashboardPage: React.FC = () => {
                     <>
                       <div className="mb-4 p-2 bg-gray-100 rounded-lg">
                         <div className="w-32 h-32 overflow-hidden rounded-lg">
-                          {/* 실제 이미지 표시 */}
-                          <div className={`w-full h-full flex items-center justify-center character-${todayCharacter.type || ''} character-image`}>
-                            {/* 캐릭터 이미지가 없을 경우 텍스트로 대체 */}
-                            {!todayCharacter.type && (
-                              <span className="text-lg font-bold">
-                                {characterImages[todayCharacter.type as keyof typeof characterImages] || todayCharacter.type}
-                              </span>
-                            )}
+                          {/* 캐릭터 타입에 따른 이미지 표시 */}
+                          <div className={`w-full h-full flex items-center justify-center character-${todayCharacter.type} character-image`}>
+                            {/* 이미지가 로드되지 않을 경우에만 텍스트 표시 */}
+                            <span className="text-lg font-bold opacity-0">
+                              {characterImages[todayCharacter.type as keyof typeof characterImages] || todayCharacter.type}
+                            </span>
                           </div>
                         </div>
                       </div>

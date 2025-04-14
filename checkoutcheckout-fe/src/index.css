@@ -1,8 +1,7 @@
+@import url('./index.characters.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('./index.characters.css');
 
 @layer components {
   .btn {

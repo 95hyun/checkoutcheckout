@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaMedal, FaTrophy, FaAward, FaUser } from 'react-icons/fa';
 import { StudyMemberRankEntry } from '../types';
+import { formatSecondsToReadable } from '../utils/timeUtils';
 
 interface StudyMemberRankingListProps {
   rankings: StudyMemberRankEntry[];
@@ -13,6 +14,17 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
   period,
   currentUserId
 }) => {
+  // 공부 시간 표시 형식 (서버에서 오는 형식을 사용하거나 직접 계산)
+  const formatStudyTime = (entry: StudyMemberRankEntry): string => {
+    if (entry.formattedStudyTime && entry.formattedStudyTime !== "00:00:00") {
+      return entry.formattedStudyTime;
+    }
+    
+    // 서버에서 온 형식이 없거나 00:00:00인 경우 직접 계산
+    // studyTime은 밀리초 단위이므로 초 단위로 변환
+    return formatSecondsToReadable(Math.floor(entry.studyTime / 1000));
+  };
+
   if (!rankings.length) {
     return (
       <div className="text-center py-10 text-gray-500">
@@ -40,7 +52,7 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
               </div>
               <div className="mt-2 w-24">
                 <p className="font-medium text-gray-800 truncate">{rankings[1].nickname}</p>
-                <p className="text-xs font-semibold text-gray-500">{rankings[1].formattedStudyTime}</p>
+                <p className="text-xs font-semibold text-gray-500">{formatStudyTime(rankings[1])}</p>
               </div>
             </div>
           </div>
@@ -59,7 +71,7 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
             </div>
             <div className="mt-2 w-24">
               <p className="font-medium text-gray-800 truncate">{rankings[0].nickname}</p>
-              <p className="text-xs font-semibold text-gray-500">{rankings[0].formattedStudyTime}</p>
+              <p className="text-xs font-semibold text-gray-500">{formatStudyTime(rankings[0])}</p>
             </div>
           </div>
         </div>
@@ -77,7 +89,7 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
               </div>
               <div className="mt-2 w-24">
                 <p className="font-medium text-gray-800 truncate">{rankings[2].nickname}</p>
-                <p className="text-xs font-semibold text-gray-500">{rankings[2].formattedStudyTime}</p>
+                <p className="text-xs font-semibold text-gray-500">{formatStudyTime(rankings[2])}</p>
               </div>
             </div>
           </div>
@@ -102,7 +114,7 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
               </div>
               <div>
                 <p className="font-medium">{rank.nickname}</p>
-                <p className="text-xs text-gray-500">{rank.formattedStudyTime}</p>
+                <p className="text-xs text-gray-500">{formatStudyTime(rank)}</p>
               </div>
             </div>
           </div>

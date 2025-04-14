@@ -13,9 +13,24 @@ const characterImages = {
   'cleric': '클레릭', // 성직자
   'knight': '기사',
   'dwarf': '드워프',
-  'demonFemale': '여성 악마',
-  'demonMale': '남성 악마',
-  'wizard': '마법사'
+  'demonfemale': '여성 악마',
+  'demonmale': '남성 악마',
+  'wizard': '마법사',
+  'shield': '방패병',
+  'captain': '캡틴',
+  'archer': '궁수',
+  'assassin': '암살자',
+  // 대문자 버전 추가
+  'CLERIC': '클레릭',
+  'KNIGHT': '기사',
+  'DWARF': '드워프',
+  'DEMON_FEMALE': '여성 악마',
+  'DEMON_MALE': '남성 악마',
+  'WIZARD': '마법사',
+  'SHIELD': '방패병',
+  'CAPTAIN': '캡틴',
+  'ARCHER': '궁수',
+  'ASSASSIN': '암살자'
 };
 
 const ProfilePage: React.FC = () => {
@@ -70,13 +85,11 @@ const ProfilePage: React.FC = () => {
                   <div key={index} className="flex flex-col items-center p-2 border rounded-lg hover:shadow-md transition-shadow">
                     <div className="w-full mb-2 aspect-square bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                       {/* 실제 서비스에서는 이미지 URL을 사용하고, 로컬 테스트에서는 임시 텍스트 표시 */}
-                      <div className={`w-full h-full flex items-center justify-center character-${character.type || ''} character-image`}>
-                        {/* 이미지가 없을 경우 텍스트로 대체 */}
-                        {!character.type && (
-                          <span className="text-lg font-bold">
-                            {characterImages[character.type as keyof typeof characterImages] || character.type}
-                          </span>
-                        )}
+                      <div className={`w-full h-full flex items-center justify-center character-${character.type} character-image`}>
+                        {/* 이미지가 로드되지 않을 경우에만 텍스트 표시 */}
+                        <span className="text-lg font-bold opacity-0">
+                          {characterImages[character.type as keyof typeof characterImages] || character.type}
+                        </span>
                       </div>
                     </div>
                     <p className="text-sm font-medium text-center">

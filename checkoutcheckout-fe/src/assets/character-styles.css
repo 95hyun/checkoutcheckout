@@ -1,26 +1,42 @@
 /* 캐릭터 이미지 스타일 */
-.character-cleric {
+.character-cleric, .character-CLERIC {
   background-image: url('/characters/checkout_char_1_girl_healer.png');
 }
 
-.character-knight {
+.character-knight, .character-KNIGHT {
   background-image: url('/characters/checkout_char_2_girl_knight.png');
 }
 
-.character-dwarf {
+.character-dwarf, .character-DWARF {
   background-image: url('/characters/checkout_char_3_man_axe.png');
 }
 
-.character-demonFemale {
-  background-image: url('/characters/dcheckout_char_4_girl_devil.png');
+.character-demonFemale, .character-demonfemale, .character-DEMON_FEMALE {
+  background-image: url('/characters/checkout_char_4_girl_devil.png');
 }
 
-.character-demonMale {
+.character-demonMale, .character-demonmale, .character-DEMON_MALE {
   background-image: url('/characters/checkout_char_5_man_devil.png');
 }
 
-.character-wizard {
+.character-wizard, .character-WIZARD {
   background-image: url('/characters/checkout_char_6_girl_magi.png');
+}
+
+.character-shield, .character-SHIELD {
+  background-image: url('/characters/checkout_char_7_man_sheild.png');
+}
+
+.character-captain, .character-CAPTAIN {
+  background-image: url('/characters/checkout_char_8_man_captin.png');
+}
+
+.character-archer, .character-ARCHER {
+  background-image: url('/characters/checkout_char_9_girl_archer.png');
+}
+
+.character-assassin, .character-ASSASSIN {
+  background-image: url('/characters/checkout_char_10_man_assasin.png');
 }
 
 .character-image {

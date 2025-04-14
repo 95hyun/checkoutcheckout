@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeft, FaEdit, FaTrash, FaUserPlus, FaSignOutAlt, FaCrown, FaUserShield, FaChartBar } from 'react-icons/fa';
+import { FaArrowLeft, FaEdit, FaTrash, FaUserPlus, FaSignOutAlt, FaCrown, FaUserShield, FaChartBar, FaUsers } from 'react-icons/fa';
 import useStudyStore from '../store/studyStore';
 import useAuthStore from '../store/authStore';
 import useStudyRankingStore from '../store/studyRankingStore';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
 import StudyMemberRankingList from '../components/StudyMemberRankingList';
+import Navbar from '../components/Navbar';
 
 enum RankingType {
   DAILY = 'daily',
@@ -117,15 +118,18 @@ const StudyDetailPage: React.FC = () => {
   };
   
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      <div className="flex items-center mb-6">
-        <button 
-          onClick={() => navigate('/studies')}
-          className="text-gray-500 hover:text-gray-700 mr-3"
-        >
-          <FaArrowLeft />
-        </button>
-        <h1 className="text-2xl font-bold text-gray-800">{currentStudy.name}</h1>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="max-w-6xl mx-auto p-4">
+        <div className="flex items-center mb-6">
+          <button 
+            onClick={() => navigate('/studies')}
+            className="text-gray-500 hover:text-gray-700 mr-3"
+          >
+            <FaArrowLeft />
+          </button>
+          <h1 className="text-2xl font-bold text-gray-800">{currentStudy?.name}</h1>
+        </div>
         
         {/* 스터디장/관리자 메뉴 */}
         {(currentStudy.isOwner || currentStudy.isAdmin) && (

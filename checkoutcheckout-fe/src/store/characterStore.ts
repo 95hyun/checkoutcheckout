@@ -30,9 +30,17 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
       try {
         const characters = await characterApi.getUserCharacters();
         
+        // 타입 정규화 - 백엔드에서 오는 값이 CSS 클래스와 일치하는지 확인
+        const normalizedCharacters = characters.map(char => ({
+          ...char,
+          // 타입 매핑이 필요한 경우 여기서 처리
+          // 예: CLERIC -> cleric, KNIGHT -> knight 등
+          type: char.type?.toLowerCase() || ''
+        }));
+        
         // 오늘 획득한 캐릭터 확인
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
-        const todayCharacter = characters.find(c => 
+        const todayCharacter = normalizedCharacters.find(c => 
           new Date(c.acquiredDate).toISOString().split('T')[0] === today
         ) || null;
         
@@ -45,7 +53,7 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         }
         
         set({ 
-          characters, 
+          characters: normalizedCharacters, 
           todayCharacter,
           hasReceivedTodayCharacter: !!todayCharacter,
           loading: false 
@@ -94,10 +102,16 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         const character = await characterApi.acquireCharacter(characterType);
         console.log("백엔드에서 캐릭터 획득 성공:", character);
         
+        // 타입 정규화
+        const normalizedCharacter = {
+          ...character,
+          type: character.type?.toLowerCase() || ''
+        };
+        
         // 상태 업데이트
         set((state) => ({ 
-          characters: [...state.characters, character],
-          todayCharacter: character,
+          characters: [...state.characters, normalizedCharacter],
+          todayCharacter: normalizedCharacter,
           hasReceivedTodayCharacter: true,
           loading: false 
         }));
@@ -106,10 +120,10 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         const today = new Date().toISOString().split('T')[0];
         localStorage.setItem('today_character', JSON.stringify({
           date: today,
-          character: character
+          character: normalizedCharacter
         }));
         
-        return character;
+        return normalizedCharacter;
       } catch (apiError) {
         // 백엔드 연결 실패 - 로컬에서만 처리
         console.warn('백엔드 서버에 연결할 수 없어 로컬에서만 처리합니다:', apiError);
@@ -117,7 +131,7 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         // 임시 캐릭터 객체 생성
         const mockCharacter: Character = {
           id: Date.now(),
-          type: characterType,
+          type: characterType.toLowerCase(),
           acquiredDate: new Date().toISOString(),
         };
         console.log("로컬에서 임시 캐릭터 생성:", mockCharacter);
@@ -180,11 +194,17 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         // 오늘 획득한 캐릭터가 있으면 상세 정보 가져오기
         let todayCharacter = null;
         if (hasCharacter) {
-          todayCharacter = await characterApi.getTodayCharacter();
-          console.log("백엔드에서 오늘 캐릭터 정보 가져옴:", todayCharacter);
+          const character = await characterApi.getTodayCharacter();
+          console.log("백엔드에서 오늘 캐릭터 정보 가져옴:", character);
           
-          // 로컬 스토리지에도 저장
-          if (todayCharacter) {
+          // 타입 정규화
+          if (character) {
+            todayCharacter = {
+              ...character,
+              type: character.type?.toLowerCase() || ''
+            };
+            
+            // 로컬 스토리지에도 저장
             localStorage.setItem('today_character', JSON.stringify({
               date: today,
               character: todayCharacter

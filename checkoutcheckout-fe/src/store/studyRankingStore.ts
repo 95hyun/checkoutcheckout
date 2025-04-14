@@ -41,8 +41,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchDailyStudyRanking: async (date) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getDailyStudyRanking(date);
-      set({ dailyStudyRanking: response.data, isLoading: false });
+      const dailyStudyRanking = await rankApi.getDailyStudyRanking(date);
+      set({ dailyStudyRanking, isLoading: false });
     } catch (error) {
       console.error('일일 스터디 랭킹 조회 에러:', error);
       set({ 
@@ -55,8 +55,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchWeeklyStudyRanking: async (startDate, endDate) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getWeeklyStudyRanking(startDate, endDate);
-      set({ weeklyStudyRanking: response.data, isLoading: false });
+      const weeklyStudyRanking = await rankApi.getWeeklyStudyRanking(startDate, endDate);
+      set({ weeklyStudyRanking, isLoading: false });
     } catch (error) {
       console.error('주간 스터디 랭킹 조회 에러:', error);
       set({ 
@@ -69,8 +69,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchMonthlyStudyRanking: async (year, month) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getMonthlyStudyRanking(year, month);
-      set({ monthlyStudyRanking: response.data, isLoading: false });
+      const monthlyStudyRanking = await rankApi.getMonthlyStudyRanking(year, month);
+      set({ monthlyStudyRanking, isLoading: false });
     } catch (error) {
       console.error('월간 스터디 랭킹 조회 에러:', error);
       set({ 
@@ -84,8 +84,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchStudyMemberDailyRanking: async (studyId, date) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getStudyMemberDailyRanking(studyId, date);
-      set({ studyMemberDailyRanking: response.data, isLoading: false });
+      const studyMemberDailyRanking = await rankApi.getStudyMemberDailyRanking(studyId, date);
+      set({ studyMemberDailyRanking, isLoading: false });
     } catch (error) {
       console.error('일일 스터디 멤버 랭킹 조회 에러:', error);
       set({ 
@@ -98,8 +98,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchStudyMemberWeeklyRanking: async (studyId, startDate, endDate) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getStudyMemberWeeklyRanking(studyId, startDate, endDate);
-      set({ studyMemberWeeklyRanking: response.data, isLoading: false });
+      const studyMemberWeeklyRanking = await rankApi.getStudyMemberWeeklyRanking(studyId, startDate, endDate);
+      set({ studyMemberWeeklyRanking, isLoading: false });
     } catch (error) {
       console.error('주간 스터디 멤버 랭킹 조회 에러:', error);
       set({ 
@@ -112,8 +112,8 @@ export const useStudyRankingStore = create<StudyRankingState>((set) => ({
   fetchStudyMemberMonthlyRanking: async (studyId, year, month) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await rankApi.getStudyMemberMonthlyRanking(studyId, year, month);
-      set({ studyMemberMonthlyRanking: response.data, isLoading: false });
+      const studyMemberMonthlyRanking = await rankApi.getStudyMemberMonthlyRanking(studyId, year, month);
+      set({ studyMemberMonthlyRanking, isLoading: false });
     } catch (error) {
       console.error('월간 스터디 멤버 랭킹 조회 에러:', error);
       set({ 

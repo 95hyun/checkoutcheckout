@@ -72,7 +72,6 @@ const RankingPage: React.FC = () => {
   }, [fetchDailyRanking, fetchDailyStudyRanking, fetchWeeklyStudyRanking, fetchMonthlyStudyRanking, 
       selectedDate, rankingType, category]);
   
-  // 현재 선택된 랭킹 기간에 맞는 날짜 범위 텍스트
   const getPeriodText = () => {
     if (rankingType === RankingType.DAILY) {
       return format(selectedDate, 'yyyy년 M월 d일');
@@ -230,7 +229,5 @@ const RankingPage: React.FC = () => {
     </div>
   );
 };
-
-export default RankingPage;
 
 export default RankingPage;

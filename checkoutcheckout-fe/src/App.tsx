@@ -48,16 +48,14 @@ function App() {
         {/* 스터디 관련 라우트 */}
         <Route path="/studies" element={<StudiesPage />} />
         <Route path="/studies/create" element={<StudyCreatePage />} />
-        <Route path="/studies/:studyId" element={<StudyDetailPage />} />
         <Route path="/studies/edit/:studyId" element={<StudyEditPage />} />
         <Route path="/studies/join/:studyId" element={<StudyJoinPage />} />
+        <Route path="/studies/:studyId" element={<StudyDetailPage />} />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
 }
-
-export default App;
 
 export default App;
