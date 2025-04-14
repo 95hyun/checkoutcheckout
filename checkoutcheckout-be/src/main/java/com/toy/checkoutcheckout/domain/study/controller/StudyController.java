@@ -2,7 +2,7 @@ package com.toy.checkoutcheckout.domain.study.controller;
 
 import com.toy.checkoutcheckout.domain.study.dto.*;
 import com.toy.checkoutcheckout.domain.study.service.StudyService;
-import com.toy.checkoutcheckout.global.auth.CurrentUser;
+import com.toy.checkoutcheckout.global.CurrentUser;
 import com.toy.checkoutcheckout.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -40,3 +40,29 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Medal colors */
+.bg-gold {
+  background-color: #FFD700;
+}
+
+.bg-silver {
+  background-color: #C0C0C0;
+}
+
+.bg-bronze {
+  background-color: #CD7F32;
+}
+
+/* Button variants */
+.btn-primary-sm {
+  @apply px-3 py-1 bg-primary text-white text-sm font-medium rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+}
+
+.btn-outline-sm {
+  @apply px-3 py-1 bg-white text-primary text-sm font-medium rounded border border-primary hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+}
+
+.btn-danger-sm {
+  @apply px-3 py-1 bg-white text-red-600 text-sm font-medium rounded border border-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50;
+}
