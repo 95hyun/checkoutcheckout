@@ -11,8 +11,9 @@ import ErrorMessage from '../components/ErrorMessage';
 import '../assets/character-styles.css';
 
 // 캐릭터 이미지 매핑 (임시 - 실제로는 서버에서 URL을 받아올 것)
-const characterImages = {
-  'cleric': '클레릭', // 성직자
+const characterImages: Record<string, string> = {
+  // 소문자
+  'cleric': '클레릭',
   'knight': '기사',
   'dwarf': '드워프',
   'demonfemale': '여성 악마',
@@ -22,7 +23,16 @@ const characterImages = {
   'captain': '캡틴',
   'archer': '궁수',
   'assassin': '암살자',
-  // 대문자 버전 추가
+  
+  // 카멜 케이스
+  'demonFemale': '여성 악마',
+  'demonMale': '남성 악마',
+  
+  // 스네이크 케이스
+  'demon_female': '여성 악마',
+  'demon_male': '남성 악마',
+  
+  // 대문자
   'CLERIC': '클레릭',
   'KNIGHT': '기사',
   'DWARF': '드워프',
@@ -32,7 +42,19 @@ const characterImages = {
   'SHIELD': '방패병',
   'CAPTAIN': '캡틴',
   'ARCHER': '궁수',
-  'ASSASSIN': '암살자'
+  'ASSASSIN': '암살자',
+  
+  // 첫 글자만 대문자
+  'Cleric': '클레릭',
+  'Knight': '기사',
+  'Dwarf': '드워프',
+  'DemonFemale': '여성 악마',
+  'DemonMale': '남성 악마',
+  'Wizard': '마법사',
+  'Shield': '방패병',
+  'Captain': '캡틴',
+  'Archer': '궁수',
+  'Assassin': '암살자'
 };
 
 const DashboardPage: React.FC = () => {
@@ -75,7 +97,7 @@ const DashboardPage: React.FC = () => {
             <div className="card">
               <h2 className="text-xl font-bold mb-4 flex items-center">
                 <FaGem className="mr-2 text-primary" />
-                오늘의 캐릭터
+                오늘의 획득 캐릭터
               </h2>
               
               {characterError && (
@@ -94,15 +116,18 @@ const DashboardPage: React.FC = () => {
                         <div className="w-32 h-32 overflow-hidden rounded-lg">
                           {/* 캐릭터 타입에 따른 이미지 표시 */}
                           <div className={`w-full h-full flex items-center justify-center character-${todayCharacter.type} character-image`}>
-                            {/* 이미지가 로드되지 않을 경우에만 텍스트 표시 */}
+                            {/* 
+                              이미지가 로드되지 않을 경우에만 텍스트 표시,
+                              character.type 값을 그대로 클래스에 적용 (대소문자 구분 유지)
+                            */}
                             <span className="text-lg font-bold opacity-0">
-                              {characterImages[todayCharacter.type as keyof typeof characterImages] || todayCharacter.type}
+                              {characterImages[todayCharacter.type] || todayCharacter.type}
                             </span>
                           </div>
                         </div>
                       </div>
                       <p className="font-medium text-center">
-                        {characterImages[todayCharacter.type as keyof typeof characterImages] || todayCharacter.type}
+                        {characterImages[todayCharacter.type] || todayCharacter.type}
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
                         획득일: {new Date(todayCharacter.acquiredDate).toLocaleDateString()}

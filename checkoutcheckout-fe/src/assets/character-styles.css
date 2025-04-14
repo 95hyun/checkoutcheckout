@@ -1,48 +1,227 @@
 /* 캐릭터 이미지 스타일 */
-.character-cleric, .character-CLERIC {
+/* 모든 가능한 타입의 형식을 포함 (대/소문자, camelCase, snake_case) */
+
+/* 1번: 클레릭(성직자) */
+.character-cleric, .character-CLERIC, .character-Cleric {
   background-image: url('/characters/checkout_char_1_girl_healer.png');
-}
-
-.character-knight, .character-KNIGHT {
-  background-image: url('/characters/checkout_char_2_girl_knight.png');
-}
-
-.character-dwarf, .character-DWARF {
-  background-image: url('/characters/checkout_char_3_man_axe.png');
-}
-
-.character-demonFemale, .character-demonfemale, .character-DEMON_FEMALE {
-  background-image: url('/characters/checkout_char_4_girl_devil.png');
-}
-
-.character-demonMale, .character-demonmale, .character-DEMON_MALE {
-  background-image: url('/characters/checkout_char_5_man_devil.png');
-}
-
-.character-wizard, .character-WIZARD {
-  background-image: url('/characters/checkout_char_6_girl_magi.png');
-}
-
-.character-shield, .character-SHIELD {
-  background-image: url('/characters/checkout_char_7_man_sheild.png');
-}
-
-.character-captain, .character-CAPTAIN {
-  background-image: url('/characters/checkout_char_8_man_captin.png');
-}
-
-.character-archer, .character-ARCHER {
-  background-image: url('/characters/checkout_char_9_girl_archer.png');
-}
-
-.character-assassin, .character-ASSASSIN {
-  background-image: url('/characters/checkout_char_10_man_assasin.png');
-}
-
-.character-image {
-  width: 100%;
-  height: 100%;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+/* 2번: 기사 */
+.character-knight, .character-KNIGHT, .character-Knight {
+  background-image: url('/characters/checkout_char_2_girl_knight.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 3번: 드워프 */
+.character-dwarf, .character-DWARF, .character-Dwarf {
+  background-image: url('/characters/checkout_char_3_man_axe.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 4번: 여성 악마 */
+.character-demonfemale, .character-DEMON_FEMALE, .character-DEMONFEMALE, 
+.character-demon_female, .character-demonFemale, .character-DemonFemale {
+  background-image: url('/characters/checkout_char_4_girl_devil.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 5번: 남성 악마 */
+.character-demonmale, .character-DEMON_MALE, .character-DEMONMALE, 
+.character-demon_male, .character-demonMale, .character-DemonMale {
+  background-image: url('/characters/checkout_char_5_man_devil.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 6번: 마법사 */
+.character-wizard, .character-WIZARD, .character-Wizard {
+  background-image: url('/characters/checkout_char_6_girl_magi.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 7번: 방패병 */
+.character-shield, .character-SHIELD, .character-Shield {
+  background-image: url('/characters/checkout_char_7_man_sheild.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 8번: 캡틴 */
+.character-captain, .character-CAPTAIN, .character-Captain {
+  background-image: url('/characters/checkout_char_8_man_captin.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 9번: 궁수 */
+.character-archer, .character-ARCHER, .character-Archer {
+  background-image: url('/characters/checkout_char_9_girl_archer.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 10번: 암살자 */
+.character-assassin, .character-ASSASSIN, .character-Assassin {
+  background-image: url('/characters/checkout_char_10_man_assasin.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 공통 이미지 스타일 */
+.character-image {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* 3D 효과 관련 스타일 */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* 모달에서 캐릭터 이미지에 그림자와 깊이감 추가 */
+.character-modal-image {
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* 빛 반사 효과를 위한 스타일 */
+.card-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  transform-style: preserve-3d;
+}
+
+.card-shine {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  right: -100%;
+  bottom: -100%;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.25) 25%, 
+    rgba(255, 255, 255, 0.5) 50%, 
+    rgba(255, 255, 255, 0.25) 75%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  opacity: 0.5;
+  transform: rotate(45deg);
+  mix-blend-mode: overlay;
+  z-index: 10;
+}
+
+/* 부드러운 애니메이션 위한 스타일 */
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+/* 모달 스타일 */
+.character-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.character-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+.character-modal-content {
+  position: relative;
+  width: 300px;
+  height: 420px;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+  z-index: 1001;
+  pointer-events: auto;
+}
+
+.character-modal.active .character-modal-overlay {
+  opacity: 1;
+}
+
+.character-modal.active .character-modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 카드 테두리 효과 */
+.card-border {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* 홀로그램 효과 */
+.holographic {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 128, 0.1) 0%,
+    rgba(255, 140, 0, 0.1) 25%,
+    rgba(0, 255, 0, 0.1) 50%,
+    rgba(0, 140, 255, 0.1) 75%,
+    rgba(128, 0, 255, 0.1) 100%
+  );
+  mix-blend-mode: overlay;
 }

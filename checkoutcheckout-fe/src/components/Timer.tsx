@@ -8,12 +8,16 @@ import { useNavigate } from 'react-router-dom';
 
 // 캐릭터 이미지 가져오기
 const characterTypes = [
-  'cleric',     // 성직자
-  'knight',     // 기사
-  'dwarf',      // 드워프
+  'cleric',      // 성직자
+  'knight',      // 기사
+  'dwarf',       // 드워프
   'demonFemale', // 여성 악마
-  'demonMale',  // 남성 악마
-  'wizard'      // 마법사
+  'demonMale',   // 남성 악마
+  'wizard',      // 마법사
+  'shield',      // 방패병
+  'captain',     // 캡틴
+  'archer',      // 궁수
+  'assassin'     // 암살자
 ];
 
 // 캐릭터 획득을 위한 최소 공부 시간 (10초)

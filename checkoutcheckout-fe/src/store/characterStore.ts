@@ -31,12 +31,15 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         const characters = await characterApi.getUserCharacters();
         
         // 타입 정규화 - 백엔드에서 오는 값이 CSS 클래스와 일치하는지 확인
-        const normalizedCharacters = characters.map(char => ({
-          ...char,
-          // 타입 매핑이 필요한 경우 여기서 처리
-          // 예: CLERIC -> cleric, KNIGHT -> knight 등
-          type: char.type?.toLowerCase() || ''
-        }));
+        const normalizedCharacters = characters.map(char => {
+          // 타입 값이 없는 경우 처리
+          if (!char.type) {
+            return { ...char, type: '' };
+          }
+          
+          // 타입 그대로 유지 - CSS에서 모든 케이스를 처리하도록 수정
+          return { ...char };
+        });
         
         // 오늘 획득한 캐릭터 확인
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
@@ -105,7 +108,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         // 타입 정규화
         const normalizedCharacter = {
           ...character,
-          type: character.type?.toLowerCase() || ''
+          // 타입 값 그대로 유지
+          type: character.type || ''
         };
         
         // 상태 업데이트
@@ -131,7 +135,7 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         // 임시 캐릭터 객체 생성
         const mockCharacter: Character = {
           id: Date.now(),
-          type: characterType.toLowerCase(),
+          type: characterType, // 타입 그대로 유지
           acquiredDate: new Date().toISOString(),
         };
         console.log("로컬에서 임시 캐릭터 생성:", mockCharacter);
@@ -201,7 +205,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
           if (character) {
             todayCharacter = {
               ...character,
-              type: character.type?.toLowerCase() || ''
+              // 타입 값 그대로 유지
+              type: character.type || ''
             };
             
             // 로컬 스토리지에도 저장

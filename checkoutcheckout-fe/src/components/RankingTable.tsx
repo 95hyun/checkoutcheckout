@@ -1,7 +1,7 @@
 import React from 'react';
 import { RankEntry, StudyRankEntry } from '../types';
 import { formatSecondsToReadable } from '../utils/timeUtils';
-import { FaMedal, FaTrophy, FaUsers } from 'react-icons/fa';
+import { FaMedal, FaTrophy, FaUsers, FaClock } from 'react-icons/fa';
 
 interface RankingTableProps {
   rankings: RankEntry[] | StudyRankEntry[];
@@ -23,6 +23,22 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
     }
   };
 
+  // 공부 시간 포맷팅 함수
+  const formatStudyTime = (entry: RankEntry | StudyRankEntry): string => {
+    if (isStudyRanking) {
+      const studyEntry = entry as StudyRankEntry;
+      // formattedStudyTime이 있으면 우선 사용
+      if (studyEntry.formattedStudyTime && studyEntry.formattedStudyTime !== "00:00:00") {
+        return studyEntry.formattedStudyTime;
+      }
+      // 없으면 studyTime을 초 단위로 변환 (밀리초 아님)
+      return formatSecondsToReadable(studyEntry.studyTime);
+    } else {
+      // 사용자 랭킹의 경우 studyTime은 초 단위
+      return formatSecondsToReadable((entry as RankEntry).studyTime);
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -35,7 +51,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
               {isStudyRanking ? '스터디명' : '닉네임'}
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              공부 시간
+              {isStudyRanking ? '스터디원 공부시간 합계' : '공부 시간'}
             </th>
           </tr>
         </thead>
@@ -44,9 +60,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
             const isCurrentUser = !isStudyRanking && currentUserId === (entry as RankEntry).userId;
             const userId = isStudyRanking ? (entry as StudyRankEntry).studyId : (entry as RankEntry).userId;
             const name = isStudyRanking ? (entry as StudyRankEntry).studyName : (entry as RankEntry).nickname;
-            const studyTime = isStudyRanking 
-              ? (entry as StudyRankEntry).formattedStudyTime || formatSecondsToReadable((entry as StudyRankEntry).studyTime / 1000)
-              : formatSecondsToReadable((entry as RankEntry).studyTime);
+            const studyTime = formatStudyTime(entry);
             
             return (
               <tr 
@@ -73,7 +87,10 @@ const RankingTable: React.FC<RankingTableProps> = ({ rankings, currentUserId, is
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {studyTime}
+                  <div className="flex items-center">
+                    <FaClock className="text-gray-400 mr-2" />
+                    {studyTime}
+                  </div>
                 </td>
               </tr>
             );

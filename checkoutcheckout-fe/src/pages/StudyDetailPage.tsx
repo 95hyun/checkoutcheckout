@@ -428,6 +428,8 @@ const StudyDetailPage: React.FC = () => {
                   rankings={studyMemberDailyRanking.rankings} 
                   period={`${new Date(studyMemberDailyRanking.startDate).toLocaleDateString()}`}
                   currentUserId={user?.id || 0}
+                  totalStudyTime={studyMemberDailyRanking.totalStudyTime}
+                  formattedTotalStudyTime={studyMemberDailyRanking.formattedTotalStudyTime}
                 />
               )}
               
@@ -436,6 +438,8 @@ const StudyDetailPage: React.FC = () => {
                   rankings={studyMemberWeeklyRanking.rankings} 
                   period={`${new Date(studyMemberWeeklyRanking.startDate).toLocaleDateString()} ~ ${new Date(studyMemberWeeklyRanking.endDate).toLocaleDateString()}`}
                   currentUserId={user?.id || 0}
+                  totalStudyTime={studyMemberWeeklyRanking.totalStudyTime}
+                  formattedTotalStudyTime={studyMemberWeeklyRanking.formattedTotalStudyTime}
                 />
               )}
               
@@ -444,6 +448,8 @@ const StudyDetailPage: React.FC = () => {
                   rankings={studyMemberMonthlyRanking.rankings} 
                   period={`${new Date(studyMemberMonthlyRanking.startDate).toLocaleDateString().split('.').slice(0, 2).join('.')}월`}
                   currentUserId={user?.id || 0}
+                  totalStudyTime={studyMemberMonthlyRanking.totalStudyTime}
+                  formattedTotalStudyTime={studyMemberMonthlyRanking.formattedTotalStudyTime}
                 />
               )}
             </>

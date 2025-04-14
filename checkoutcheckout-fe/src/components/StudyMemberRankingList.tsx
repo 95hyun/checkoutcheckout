@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaMedal, FaTrophy, FaAward, FaUser } from 'react-icons/fa';
+import { FaMedal, FaTrophy, FaAward, FaUser, FaClock } from 'react-icons/fa';
 import { StudyMemberRankEntry } from '../types';
 import { formatSecondsToReadable } from '../utils/timeUtils';
 
@@ -7,12 +7,16 @@ interface StudyMemberRankingListProps {
   rankings: StudyMemberRankEntry[];
   period: string;
   currentUserId: number;
+  totalStudyTime?: number;
+  formattedTotalStudyTime?: string;
 }
 
 const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({ 
   rankings, 
   period,
-  currentUserId
+  currentUserId,
+  totalStudyTime,
+  formattedTotalStudyTime
 }) => {
   // 공부 시간 표시 형식 (서버에서 오는 형식을 사용하거나 직접 계산)
   const formatStudyTime = (entry: StudyMemberRankEntry): string => {
@@ -21,8 +25,8 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
     }
     
     // 서버에서 온 형식이 없거나 00:00:00인 경우 직접 계산
-    // studyTime은 밀리초 단위이므로 초 단위로 변환
-    return formatSecondsToReadable(Math.floor(entry.studyTime / 1000));
+    // studyTime은 초 단위로 저장됨
+    return formatSecondsToReadable(entry.studyTime);
   };
 
   if (!rankings.length) {
@@ -36,6 +40,19 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
   return (
     <div>
       <h3 className="text-center text-gray-500 mb-6">{period} 공부시간 랭킹</h3>
+      
+      {/* 총 공부시간 표시 */}
+      {totalStudyTime !== undefined && (
+        <div className="bg-gray-100 p-4 rounded-lg mb-6 text-center">
+          <div className="flex items-center justify-center">
+            <FaClock className="text-primary mr-2" />
+            <span className="font-semibold">전체 스터디원 공부시간 합계:</span>
+            <span className="ml-2 font-bold text-primary">
+              {formattedTotalStudyTime || formatSecondsToReadable(totalStudyTime)}
+            </span>
+          </div>
+        </div>
+      )}
       
       {/* 상위 3위 */}
       <div className="flex justify-center items-end mb-10 space-x-4">

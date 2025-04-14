@@ -158,6 +158,8 @@ export interface StudyMemberRanking {
   startDate: string;
   endDate: string;
   rankings: StudyMemberRankEntry[];
+  totalStudyTime: number; // 초 단위
+  formattedTotalStudyTime: string; // "00:00:00" 형식
 }
 
 // API 응답 관련 타입

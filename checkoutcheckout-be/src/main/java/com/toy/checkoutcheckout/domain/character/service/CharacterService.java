@@ -23,7 +23,8 @@ public class CharacterService {
     
     // 유효한 캐릭터 타입 목록
     private static final List<String> VALID_CHARACTER_TYPES = Arrays.asList(
-            "cleric", "knight", "dwarf", "demonFemale", "demonMale", "wizard"
+            "cleric", "knight", "dwarf", "demonFemale", "demonMale", "wizard",
+            "shield", "captain", "archer", "assassin"
     );
     
     /**

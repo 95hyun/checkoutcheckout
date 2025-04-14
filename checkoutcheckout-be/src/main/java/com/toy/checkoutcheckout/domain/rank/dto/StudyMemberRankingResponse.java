@@ -19,6 +19,8 @@ public class StudyMemberRankingResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private List<RankEntry> rankings;
+    private Long totalStudyTime; // 스터디원들의 공부시간 합계 (초 단위)
+    private String formattedTotalStudyTime; // 포맷팅된 공부시간 합계 (HH:MM:SS)
     
     @Getter
     @Builder
@@ -28,7 +30,7 @@ public class StudyMemberRankingResponse {
         private int rank;
         private Long userId;
         private String nickname;
-        private Long studyTime; // 밀리초 단위
+        private Long studyTime; // 초 단위
         private String formattedStudyTime; // "00:00:00" 형식
     }
 }

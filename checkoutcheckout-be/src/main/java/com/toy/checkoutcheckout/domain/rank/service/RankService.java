@@ -67,12 +67,17 @@ public class RankService {
             String studyName = (String) result[1];
             Long studyTime = (Long) result[2];
             
+            // 디버깅 로그 추가
+            System.out.println("스터디 ID: " + studyId + ", 이름: " + studyName + ", 공부시간(초): " + studyTime);
+            String formattedTime = TimeUtils.formatMillisToTimeString(studyTime);
+            System.out.println("변환된 시간: " + formattedTime);
+            
             rankings.add(StudyRankingResponse.RankEntry.builder()
                     .rank(rank++)
                     .studyId(studyId)
                     .studyName(studyName)
                     .studyTime(studyTime)
-                    .formattedStudyTime(TimeUtils.formatMillisToTimeString(studyTime))
+                    .formattedStudyTime(formattedTime)
                     .build());
         }
         
@@ -175,12 +180,19 @@ public class RankService {
                     .build());
         }
         
+        // 총 공부시간 계산
+        Long totalStudyTime = rankings.stream()
+                .mapToLong(StudyMemberRankingResponse.RankEntry::getStudyTime)
+                .sum();
+                
         return StudyMemberRankingResponse.builder()
                 .studyId(studyId)
                 .studyName(study.getName())
                 .startDate(date)
                 .endDate(date)
                 .rankings(rankings)
+                .totalStudyTime(totalStudyTime)
+                .formattedTotalStudyTime(TimeUtils.formatMillisToTimeString(totalStudyTime))
                 .build();
     }
     
@@ -218,12 +230,19 @@ public class RankService {
                     .build());
         }
         
+        // 총 공부시간 계산
+        Long totalStudyTime = rankings.stream()
+                .mapToLong(StudyMemberRankingResponse.RankEntry::getStudyTime)
+                .sum();
+                
         return StudyMemberRankingResponse.builder()
                 .studyId(studyId)
                 .studyName(study.getName())
                 .startDate(startDate)
                 .endDate(endDate)
                 .rankings(rankings)
+                .totalStudyTime(totalStudyTime)
+                .formattedTotalStudyTime(TimeUtils.formatMillisToTimeString(totalStudyTime))
                 .build();
     }
     
@@ -263,12 +282,19 @@ public class RankService {
                     .build());
         }
         
+        // 총 공부시간 계산
+        Long totalStudyTime = rankings.stream()
+                .mapToLong(StudyMemberRankingResponse.RankEntry::getStudyTime)
+                .sum();
+                
         return StudyMemberRankingResponse.builder()
                 .studyId(studyId)
                 .studyName(study.getName())
                 .startDate(firstDayOfMonth)
                 .endDate(lastDayOfMonth)
                 .rankings(rankings)
+                .totalStudyTime(totalStudyTime)
+                .formattedTotalStudyTime(TimeUtils.formatMillisToTimeString(totalStudyTime))
                 .build();
     }
 }
