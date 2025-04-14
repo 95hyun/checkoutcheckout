@@ -20,8 +20,8 @@ const characterTypes = [
   'assassin'     // 암살자
 ];
 
-// 캐릭터 획득을 위한 최소 공부 시간 (10초)
-const MIN_STUDY_TIME_FOR_CHARACTER = 10; // 초 단위
+// 캐릭터 획득을 위한 최소 공부 시간 (10초) -> 6시간
+const MIN_STUDY_TIME_FOR_CHARACTER = 21600; // 초 단위
 
 const Timer: React.FC = () => {
   const { 

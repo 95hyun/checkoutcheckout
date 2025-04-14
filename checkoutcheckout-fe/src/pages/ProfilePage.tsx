@@ -229,7 +229,7 @@ const ProfilePage: React.FC = () => {
                 <div className="col-span-full py-8 text-center text-gray-500">
                   <p>아직 획득한 캐릭터가 없습니다.</p>
                   <p className="mt-2 text-sm">
-                    10초 이상 공부하면 매일 새로운 캐릭터를 획득할 수 있습니다!
+                    6시간 이상 공부하면 매일 새로운 캐릭터를 획득할 수 있습니다!
                   </p>
                 </div>
               )}

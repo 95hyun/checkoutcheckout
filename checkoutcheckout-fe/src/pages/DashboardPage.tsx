@@ -142,7 +142,7 @@ const DashboardPage: React.FC = () => {
                       </div>
                       <p className="text-gray-500 text-center">
                         아직 오늘 획득한 캐릭터가 없습니다.<br />
-                        10초 이상 공부하면 캐릭터를 획득할 수 있습니다!
+                        6시간 이상 공부하면 캐릭터를 획득할 수 있습니다!
                       </p>
                     </>
                   )}
