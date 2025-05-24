@@ -1,12 +1,68 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import AuthModal from '../components/AuthModal';
+import useAuthStore from '../store/authStore';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('signup');
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // URL 쿼리 파라미터 파싱
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const authParam = searchParams.get('auth');
+    
+    if (authParam === 'login' || authParam === 'signup') {
+      setAuthModalMode(authParam);
+      setIsAuthModalOpen(true);
+      
+      // 쿼리 파라미터 제거 (URL 깔끔하게 유지)
+      navigate('/', { replace: true });
+    }
+  }, [location, navigate]);
+
+  const handleStartClick = () => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      setAuthModalMode('signup');
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  const handleLoginClick = () => {
+    setAuthModalMode('login');
+    setIsAuthModalOpen(true);
+  };
+  
+  const handleSignupClick = () => {
+    setAuthModalMode('signup');
+    setIsAuthModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsAuthModalOpen(false);
+    // 모달이 닫힐 때 상태는 변경하지 않음
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar 추가 */}
-      <Navbar />
+      <Navbar 
+        onLoginClick={handleLoginClick} 
+        onSignupClick={handleSignupClick} 
+      />
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={handleCloseModal} 
+        initialMode={authModalMode} 
+      />
       
       {/* 헤더 영역 */}
       <header className="max-w-3xl mx-auto px-4 py-24 text-center">
@@ -20,9 +76,12 @@ const HomePage: React.FC = () => {
           스터디를 만들어서 경쟁하면 공부가 더 재밌을거에요
         </p>
         <div className="flex justify-center">
-          <Link to="/signup" className="bg-red-600 text-white py-3 px-10 rounded-full font-medium hover:bg-red-700 transition-colors">
+          <button 
+            onClick={handleStartClick} 
+            className="bg-red-600 text-white py-3 px-10 rounded-full font-medium hover:bg-red-700 transition-colors"
+          >
             무료로 시작하기
-          </Link>
+          </button>
         </div>
       </header>
       
@@ -126,9 +185,12 @@ const HomePage: React.FC = () => {
             째깍째깍으로<br />
             성취감을 올리세요
           </h2>
-          <Link to="/signup" className="inline-block bg-black text-white py-3 px-10 rounded-full font-medium hover:bg-gray-800 transition-colors">
+          <button 
+            onClick={handleStartClick} 
+            className="inline-block bg-black text-white py-3 px-10 rounded-full font-medium hover:bg-gray-800 transition-colors"
+          >
             무료로 시작하기
-          </Link>
+          </button>
         </div>
       </section>
       

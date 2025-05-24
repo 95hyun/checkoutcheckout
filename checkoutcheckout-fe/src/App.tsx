@@ -1,8 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import HistoryPage from './pages/HistoryPage';
 import RankingPage from './pages/RankingPage';
@@ -59,8 +57,12 @@ function App() {
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          
+          {/* 로그인 및 회원가입 페이지는 홈페이지의 모달로 대체됨 */}
+          <Route path="/login" element={<Navigate to="/?auth=login" replace />} />
+          <Route path="/signup" element={<Navigate to="/?auth=signup" replace />} />
+          
+          {/* 기존 라우트들 */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/ranking" element={<RankingPage />} />

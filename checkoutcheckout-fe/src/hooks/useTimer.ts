@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import useTimerStore from '../store/timerStore';
+import { formatSeconds } from '../utils/timeUtils';
 
 // 로컬 스토리지 키 상수
 const TIMER_START_KEY = 'timer_start_timestamp';
@@ -173,23 +174,11 @@ export const useTimer = () => {
     };
   }, [isActive, elapsedTime]);
 
-  // 시간 형식 변환 (초 -> 00:00:00)
-  const formatTime = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    return [
-      hours.toString().padStart(2, '0'),
-      minutes.toString().padStart(2, '0'),
-      remainingSeconds.toString().padStart(2, '0')
-    ].join(':');
-  };
 
   return {
     isActive,
     elapsedTime,
-    formattedTime: formatTime(elapsedTime),
+    formattedTime: formatSeconds(elapsedTime),
     startTimer: handleStartTimer,
     stopTimer: handleStopTimer,
     isLoading,

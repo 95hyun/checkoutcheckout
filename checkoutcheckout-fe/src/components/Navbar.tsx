@@ -1,8 +1,13 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import { FaClock, FaChartBar, FaSignOutAlt, FaUser, FaUsers } from 'react-icons/fa';
 import { Rarity } from '../types';
+
+interface NavbarProps {
+  onLoginClick?: () => void;
+  onSignupClick?: () => void;
+}
 
 // 캐릭터 희귀도 매핑 (기본값 설정 - 관리 용이성을 위해 대문자 기준)
 const characterRarityMap: Record<string, Rarity> = {
@@ -59,7 +64,7 @@ const getRarityForCharacter = (characterType: string): Rarity => {
   return characterRarityMap[characterType.toUpperCase()] || 'common';
 };
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({ onLoginClick, onSignupClick }) => {
   const { isAuthenticated, logout, user } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +78,12 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
+  };
+  
+  const handleGoHome = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    navigate('/');
   };
 
   return (
@@ -84,7 +94,7 @@ const Navbar: React.FC = () => {
             <div className="flex-shrink-0 flex items-center">
               <a 
                 href="/"
-                onClick={handleNavigate('/')} 
+                onClick={handleGoHome}
                 className="text-xl font-bold text-gray-900"
               >
                 CheckoutCheckout
@@ -165,20 +175,18 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <a
-                  href="/login"
-                  onClick={handleNavigate('/login')}
+                <button
+                  onClick={onLoginClick}
                   className="text-sm font-medium text-gray-700 hover:text-red-600"
                 >
                   로그인
-                </a>
-                <a
-                  href="/signup"
-                  onClick={handleNavigate('/signup')}
+                </button>
+                <button
+                  onClick={onSignupClick}
                   className="bg-red-600 text-white py-2 px-4 rounded-full text-sm font-medium hover:bg-red-700 transition-colors"
                 >
                   회원가입
-                </a>
+                </button>
               </div>
             )}
           </div>
