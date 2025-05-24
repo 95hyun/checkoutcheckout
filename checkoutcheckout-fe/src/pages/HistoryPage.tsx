@@ -48,7 +48,6 @@ const HistoryPage: React.FC = () => {
     addPlanItem,
     updatePlanItem,
     deletePlanItem,
-    completePlanItem,
     isLoading: isPlanLoading,
     error: planError
   } = usePlanStore();
@@ -234,17 +233,6 @@ const HistoryPage: React.FC = () => {
     }
   };
   
-  // 계획 완료 처리
-  const handleCompletePlanItem = async (itemId: number) => {
-    if (!selectedDate) return;
-    
-    try {
-      await completePlanItem(selectedDate, itemId);
-    } catch (error) {
-      console.error('계획 완료 처리 오류:', error);
-    }
-  };
-  
   // 폼 제출 핸들러
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -415,13 +403,6 @@ const HistoryPage: React.FC = () => {
                             <div className="flex items-start ml-2 space-x-2">
                               {!item.isCompleted && (
                                 <>
-                                  <button 
-                                    onClick={() => handleCompletePlanItem(item.id)}
-                                    className="text-green-600 hover:text-green-800"
-                                    aria-label="완료"
-                                  >
-                                    <FaCheck />
-                                  </button>
                                   <button 
                                     onClick={() => handleEditStart(item)}
                                     className="text-blue-600 hover:text-blue-800"

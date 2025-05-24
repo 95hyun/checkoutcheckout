@@ -8,26 +8,13 @@ import useTimerStore from '../store/timerStore';
 import usePlanStore from '../store/planStore';
 import { useNavigate } from 'react-router-dom';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
-import { formatSecondsToReadable } from '../utils/timeUtils';
+import { formatSecondsToReadable, formatSeconds } from '../utils/timeUtils';
 import { StudyPlanItem, Rarity } from '../types';
 import CharacterCard from './CharacterCard';
 import { CHARACTERS_BY_RARITY, RARITY_PROBABILITIES, getRandomRarity, getRandomCharacterByRarity } from '../constants/characterConstants';
 
 // 캐릭터 획득을 위한 최소 공부 시간 (1시간)
 const MIN_STUDY_TIME_FOR_CHARACTER = 3600; // 초 단위 (1시간 = 3600초)
-
-// 시간 형식 변환 (초 -> 00:00:00)
-const formatTimeDisplay = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-
-  return [
-    hours.toString().padStart(2, '0'),
-    minutes.toString().padStart(2, '0'),
-    remainingSeconds.toString().padStart(2, '0')
-  ].join(':');
-};
 
 const Timer: React.FC = () => {
   const {
@@ -75,7 +62,6 @@ const Timer: React.FC = () => {
   const {
     getPlansByDate,
     currentDatePlans,
-    completePlanItem,
     isLoading: isPlanLoading,
     error: planError
   } = usePlanStore();
@@ -127,7 +113,7 @@ const Timer: React.FC = () => {
       setTodayStudyTime(todayRecord ? todayRecord.duration : 0);
 
       // 이번주 공부 시간 계산 (월요일부터 현재까지)
-      const weeklyRecords = studyHistory.records.filter(record => 
+      const weeklyRecords = studyHistory.records.filter(record =>
         record.date >= weekStart && record.date <= weekEnd
       );
       const totalWeeklyTime = weeklyRecords.reduce((total, record) => total + record.duration, 0);
@@ -194,7 +180,7 @@ const Timer: React.FC = () => {
         // 해당 희귀도의 캐릭터 중 랜덤 선택
         const characterType = getRandomCharacterByRarity(randomRarity);
         console.log(`선택된 캐릭터 타입: ${characterType}, 희귀도: ${randomRarity}`);
-        console.log(`캐릭터 목록 확인 - ${randomRarity}:`, defaultCharactersByRarity[randomRarity]);
+        console.log(`캐릭터 목록 확인 - ${randomRarity}:`, CHARACTERS_BY_RARITY[randomRarity]);
 
         setAcquiredCharacter(characterType);
         setShowCharacterAlert(true);
@@ -272,22 +258,6 @@ const Timer: React.FC = () => {
     navigate('/dashboard');
   };
 
-  // 계획 항목 완료 처리
-  const handleCompletePlan = async (itemId: number) => {
-    try {
-      await completePlanItem(new Date(), itemId);
-      // 완료한 계획이 현재 선택된 계획이었다면 상태 업데이트
-      if (selectedPlan && selectedPlan.id === itemId) {
-        setSelectedPlan({
-          ...selectedPlan,
-          isCompleted: true
-        });
-      }
-    } catch (error) {
-      console.error('계획 완료 처리 실패:', error);
-    }
-  };
-
   // 오늘 계획 수립으로 이동
   const navigateToPlanPage = () => {
     navigate('/history');
@@ -295,20 +265,12 @@ const Timer: React.FC = () => {
 
   // 목표 시간 달성 후 계속 공부하기
   const handleContinueTimer = async () => {
-    if (selectedPlan) {
-      // 선택된 계획 완료 처리
-      await handleCompletePlan(selectedPlan.id);
-    }
     // 팝업 닫기
     setShowTargetReachedPopup(false);
   };
 
   // 목표 시간 달성 후 타이머 종료하기
   const handleStopAfterTarget = async () => {
-    if (selectedPlan) {
-      // 선택된 계획 완료 처리
-      await handleCompletePlan(selectedPlan.id);
-    }
     // 팝업 닫기 및 타이머 종료
     setShowTargetReachedPopup(false);
     await handleStopTimer();
@@ -442,7 +404,7 @@ const Timer: React.FC = () => {
                 <FaClock className="mr-2 text-blue-500" />
                 <span className="text-gray-700 font-medium">오늘 공부 시간</span>
               </div>
-              <span className="font-mono font-bold text-blue-700">{formatTimeDisplay(todayStudyTime)}</span>
+              <span className="font-mono font-bold text-blue-700">{formatSeconds(todayStudyTime)}</span>
             </div>
 
             <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg">
@@ -450,7 +412,7 @@ const Timer: React.FC = () => {
                 <FaCalendarAlt className="mr-2 text-indigo-500" />
                 <span className="text-gray-700 font-medium">이번주 공부 시간</span>
               </div>
-              <span className="font-mono font-bold text-indigo-700">{formatTimeDisplay(weeklyStudyTime)}</span>
+              <span className="font-mono font-bold text-indigo-700">{formatSeconds(weeklyStudyTime)}</span>
             </div>
           </div>
         </div>
@@ -491,18 +453,11 @@ const Timer: React.FC = () => {
                 {uncompletedPlans.length > 0 && (
                     <div className="space-y-2">
                       {uncompletedPlans.map(plan => (
-                          <div key={plan.id} className="bg-white border border-gray-200 rounded-lg p-3 flex justify-between items-center">
+                          <div key={plan.id} className="bg-white border border-gray-200 rounded-lg p-3">
                             <div className="flex-1">
                               <p className="font-medium">{plan.content}</p>
                               <p className="text-xs text-gray-500 mt-1">목표: {formatSecondsToReadable(plan.plannedDuration)}</p>
                             </div>
-                            <button
-                                onClick={() => handleCompletePlan(plan.id)}
-                                className="ml-2 p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors"
-                                title="완료로 표시"
-                            >
-                              <FaCheck />
-                            </button>
                           </div>
                       ))}
                     </div>
