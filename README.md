@@ -1,4 +1,5 @@
-<img width="833" alt="image" src="https://github.com/user-attachments/assets/eeb441da-874a-4bf1-95e9-649405a2668e" />
+![image](https://github.com/user-attachments/assets/0578ca64-23ae-47d1-b12c-24c889d24445)
+
 
 
 ### 째깍째깍(checkoutcheckout)
