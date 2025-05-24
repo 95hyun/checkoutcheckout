@@ -11,73 +11,10 @@ import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { formatSecondsToReadable } from '../utils/timeUtils';
 import { StudyPlanItem, Rarity } from '../types';
 import CharacterCard from './CharacterCard';
+import { CHARACTERS_BY_RARITY, RARITY_PROBABILITIES, getRandomRarity, getRandomCharacterByRarity } from '../constants/characterConstants';
 
-// 동물 캐릭터 타입 목록
-const characterTypes = [
-  'common_rabbit',
-  'common_squirrel',
-  'common_hedgehog',
-  'common_pigeon',
-  'uncommon_cat',
-  'uncommon_dog',
-  'uncommon_bear',
-  'uncommon_hamster',
-  'rare_wolf',
-  'rare_fox',
-  'rare_lion',
-  'rare_penguin',
-  'epic_unicorn',
-  'epic_dragon',
-  'epic_phoneix',
-  'epic_whitetiger',
-  'legendary_doge',
-  'legendary_pepe',
-  'legendary_tralellotralala',
-  'legendary_chillguy'
-];
-
-// 희귀도별 확률 설정 (총합 100%)
-const rarityProbabilities: Record<Rarity, number> = {
-  'common': 50,     // 50% 확률
-  'uncommon': 30,   // 30% 확률
-  'rare': 15,       // 15% 확률
-  'epic': 4,        // 4% 확률
-  'legendary': 1    // 1% 확률
-};
-
-// 희귀도별 기본 캐릭터 매핑
-const defaultCharactersByRarity: Record<Rarity, string[]> = {
-  'common': ['common_rabbit', 'common_squirrel', 'common_hedgehog', 'common_pigeon'],
-  'uncommon': ['uncommon_cat', 'uncommon_dog', 'uncommon_bear', 'uncommon_hamster'],
-  'rare': ['rare_wolf', 'rare_fox', 'rare_lion', 'rare_penguin'],
-  'epic': ['epic_unicorn', 'epic_dragon', 'epic_phoneix', 'epic_whitetiger'],
-  'legendary': ['legendary_doge', 'legendary_pepe', 'legendary_tralellotralala', 'legendary_chillguy']
-};
-
-// 랜덤 희귀도 선택 함수
-const getRandomRarity = (): Rarity => {
-  const rand = Math.random() * 100; // 0-100 사이의 랜덤 값
-  let cumulativeProbability = 0;
-
-  for (const rarity of Object.keys(rarityProbabilities) as Rarity[]) {
-    cumulativeProbability += rarityProbabilities[rarity];
-    if (rand <= cumulativeProbability) {
-      return rarity;
-    }
-  }
-
-  return 'common'; // 기본값 (확률 합계가 100%면 여기까지 오지 않음)
-};
-
-// 특정 희귀도에 해당하는 캐릭터 중 랜덤 선택
-const getRandomCharacterByRarity = (rarity: Rarity): string => {
-  const charactersOfRarity = defaultCharactersByRarity[rarity];
-  const randomIndex = Math.floor(Math.random() * charactersOfRarity.length);
-  return charactersOfRarity[randomIndex];
-};
-
-// 캐릭터 획득을 위한 최소 공부 시간 (10초) -> 6시간
-const MIN_STUDY_TIME_FOR_CHARACTER = 10; // 초 단위 (6시간은 21600)
+// 캐릭터 획득을 위한 최소 공부 시간 (1시간)
+const MIN_STUDY_TIME_FOR_CHARACTER = 3600; // 초 단위 (1시간 = 3600초)
 
 // 시간 형식 변환 (초 -> 00:00:00)
 const formatTimeDisplay = (seconds: number): string => {

@@ -2,77 +2,14 @@ import React from 'react';
 import { FaMedal, FaTrophy, FaAward, FaUser, FaClock } from 'react-icons/fa';
 import { StudyMemberRankEntry, Rarity } from '../types';
 import { formatSecondsToReadable } from '../utils/timeUtils';
-
-// 캐릭터 희귀도 매핑 (기본값 설정 - 관리 용이성을 위해 대문자 기준)
-const characterRarityMap: Record<string, Rarity> = {
-  // Common 동물 캐릭터
-  'COMMON_RABBIT': 'common',
-  'COMMON_SQUIRREL': 'common',
-  'COMMON_HEDGEHOG': 'common',
-  'COMMON_PIGEON': 'common',
-  
-  // Uncommon 동물 캐릭터
-  'UNCOMMON_CAT': 'uncommon',
-  'UNCOMMON_DOG': 'uncommon',
-  'UNCOMMON_BEAR': 'uncommon',
-  'UNCOMMON_HAMSTER': 'uncommon',
-  
-  // Rare 동물 캐릭터
-  'RARE_WOLF': 'rare',
-  'RARE_FOX': 'rare',
-  'RARE_LION': 'rare',
-  'RARE_PENGUIN': 'rare',
-  
-  // Epic 동물 캐릭터
-  'EPIC_UNICORN': 'epic',
-  'EPIC_DRAGON': 'epic',
-  'EPIC_PHONEIX': 'epic',
-  'EPIC_WHITETIGER': 'epic',
-  
-  // Legendary 동물 캐릭터
-  'LEGENDARY_DOGE': 'legendary',
-  'LEGENDARY_PEPE': 'legendary',
-  'LEGENDARY_TRALELLOTRALALA': 'legendary',
-  'LEGENDARY_CHILLGUY': 'legendary'
-};
-
-// 캐릭터 타입 문자열에서 희귀도 가져오기 (대소문자 및 형식 정규화)
-const getRarityForCharacter = (characterType: string): Rarity => {
-  // 타입이 없으면 common 반환
-  if (!characterType) return 'common';
-  
-  // 카멜케이스(demonFemale) -> DEMON_FEMALE 처리
-  if (/^[a-z]+[A-Z]/.test(characterType)) {
-    // 카멜 케이스 -> 스네이크 케이스
-    const snakeCase = characterType.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
-    return characterRarityMap[snakeCase] || 'common';
-  }
-  
-  // 소문자(common_rabbit)인 경우 'COMMON_RABBIT' 변환
-  if (/^[a-z_]+$/.test(characterType)) {
-    const upperCase = characterType.toUpperCase();
-    return characterRarityMap[upperCase] || 'common';
-  }
-  
-  // 이미 SNAKE_CASE이거나 다른 형식인 경우 그대로 검색
-  return characterRarityMap[characterType.toUpperCase()] || 'common';
-};
-
-// 가능한 캐릭터 타입 목록 (시드로 사용할 용도)
-const possibleCharacterTypes = [
-  'common_rabbit', 'common_squirrel', 'common_hedgehog', 'common_pigeon',
-  'uncommon_cat', 'uncommon_dog', 'uncommon_bear', 'uncommon_hamster',
-  'rare_wolf', 'rare_fox', 'rare_lion', 'rare_penguin',
-  'epic_unicorn', 'epic_dragon', 'epic_phoneix', 'epic_whitetiger',
-  'legendary_doge', 'legendary_pepe', 'legendary_tralellotralala', 'legendary_chillguy'
-];
+import { getRarityFromType, ALL_CHARACTER_TYPES } from '../constants/characterConstants';
 
 // 특정 사용자 ID에 대해 항상 같은 캐릭터 타입을 생성하는 함수
 // 실제로는 없는 데이터이지만 UI 표시용으로만 사용
 const getCharacterTypeForUserId = (userId: number): string => {
   // userId를 가능한 캐릭터 타입 배열의 인덱스로 변환
-  const index = userId % possibleCharacterTypes.length;
-  return possibleCharacterTypes[index];
+  const index = userId % ALL_CHARACTER_TYPES.length;
+  return ALL_CHARACTER_TYPES[index];
 };
 
 interface StudyMemberRankingListProps {
@@ -179,10 +116,10 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
                     : getCharacterTypeForUserId(rankings[0].userId);
                   
                   return (
-                    <div className={`w-full h-full character-${characterType} character-image profile-rarity-${getRarityForCharacter(characterType)}`}>
+                    <div className={`w-full h-full character-${characterType} character-image profile-rarity-${getRarityFromType(characterType)}`}>
                       {/* 희귀도 효과 */}
                       {(() => {
-                        const rarity = getRarityForCharacter(characterType);
+                        const rarity = getRarityFromType(characterType);
                         if (rarity === 'legendary') return <div className="profile-legendary-effect"></div>;
                         if (rarity === 'epic') return <div className="profile-epic-effect"></div>;
                         if (rarity === 'rare') return <div className="profile-rare-effect"></div>;
@@ -264,10 +201,10 @@ const StudyMemberRankingList: React.FC<StudyMemberRankingListProps> = ({
                     : getCharacterTypeForUserId(rank.userId);
                   
                   return (
-                    <div className={`w-full h-full character-${characterType} character-image profile-rarity-${getRarityForCharacter(characterType)}`}>
+                    <div className={`w-full h-full character-${characterType} character-image profile-rarity-${getRarityFromType(characterType)}`}>
                       {/* 희귀도 효과 */}
                       {(() => {
-                        const rarity = getRarityForCharacter(characterType);
+                        const rarity = getRarityFromType(characterType);
                         if (rarity === 'legendary') return <div className="profile-legendary-effect"></div>;
                         if (rarity === 'epic') return <div className="profile-epic-effect"></div>;
                         if (rarity === 'rare') return <div className="profile-rare-effect"></div>;
