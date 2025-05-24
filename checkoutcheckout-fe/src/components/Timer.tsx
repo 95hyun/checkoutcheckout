@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { formatSecondsToReadable } from '../utils/timeUtils';
 import { StudyPlanItem, Rarity } from '../types';
+import CharacterCard from './CharacterCard';
 
 // 동물 캐릭터 타입 목록
 const characterTypes = [
@@ -113,7 +114,10 @@ const Timer: React.FC = () => {
   const [weeklyStudyTime, setWeeklyStudyTime] = useState<number>(0);
 
   // 타이머에 선택된 계획 관련 상태
-  const [selectedPlan, setSelectedPlan] = useState<StudyPlanItem | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<StudyPlanItem | null>(() => {
+    const savedPlan = localStorage.getItem('selectedStudyPlan');
+    return savedPlan ? JSON.parse(savedPlan) : null;
+  });
   const [showTargetReachedPopup, setShowTargetReachedPopup] = useState<boolean>(false);
 
   const {
@@ -178,13 +182,18 @@ const Timer: React.FC = () => {
   useEffect(() => {
     if (studyHistory && studyHistory.records) {
       const today = format(new Date(), 'yyyy-MM-dd');
+      const weekStart = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd');
+      const weekEnd = format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd');
 
       // 오늘 공부 시간 계산
       const todayRecord = studyHistory.records.find(record => record.date === today);
       setTodayStudyTime(todayRecord ? todayRecord.duration : 0);
 
-      // 이번주 공부 시간 계산
-      const totalWeeklyTime = studyHistory.records.reduce((total, record) => total + record.duration, 0);
+      // 이번주 공부 시간 계산 (월요일부터 현재까지)
+      const weeklyRecords = studyHistory.records.filter(record => 
+        record.date >= weekStart && record.date <= weekEnd
+      );
+      const totalWeeklyTime = weeklyRecords.reduce((total, record) => total + record.duration, 0);
       setWeeklyStudyTime(totalWeeklyTime);
     }
   }, [studyHistory]);
@@ -291,6 +300,15 @@ const Timer: React.FC = () => {
     }
   }, [error, characterError, planError, resetError]);
 
+  // 선택된 계획이 변경될 때마다 로컬 스토리지에 저장
+  useEffect(() => {
+    if (selectedPlan) {
+      localStorage.setItem('selectedStudyPlan', JSON.stringify(selectedPlan));
+    } else {
+      localStorage.removeItem('selectedStudyPlan');
+    }
+  }, [selectedPlan]);
+
   const handleStartTimer = async () => {
     if (!isActive && !isLoading && startTimer) {
       await startTimer();
@@ -300,7 +318,8 @@ const Timer: React.FC = () => {
   const handleStopTimer = async () => {
     if (isActive && !isLoading && stopTimer) {
       await stopTimer();
-      // 타이머가 중지되면 선택한 계획 초기화
+      setSelectedPlan(null);
+      localStorage.removeItem('selectedStudyPlan');
       if (showTargetReachedPopup) {
         setShowTargetReachedPopup(false);
       }
@@ -582,44 +601,8 @@ const Timer: React.FC = () => {
 
                   {/* 캐릭터 미리보기 */}
                   <div className="w-32 h-32 my-3 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                    <div className="w-full h-full">
-                      <img
-                          src={`/characters/checkout_${acquiredCharacter}.png`}
-                          alt={`캐릭터: ${acquiredCharacter}`}
-                          className="w-full h-full object-contain"
-                      />
-                    </div>
+                    <CharacterCard characterType={acquiredCharacter} className="w-full h-full" />
                   </div>
-
-                  {/* 희귀도 배지 */}
-                  {(() => {
-                    // 캐릭터 타입에서 희귀도 추출 (common_rabbit -> common)
-                    const rarityFromType = acquiredCharacter.split('_')[0] as Rarity;
-
-                    // 희귀도별 색상
-                    const rarityColors = {
-                      'common': 'bg-gray-500',
-                      'uncommon': 'bg-green-500',
-                      'rare': 'bg-blue-500',
-                      'epic': 'bg-purple-500',
-                      'legendary': 'bg-yellow-500'
-                    };
-
-                    // 희귀도별 이름
-                    const rarityNames = {
-                      'common': '일반',
-                      'uncommon': '고급',
-                      'rare': '희귀',
-                      'epic': '영웅',
-                      'legendary': '전설'
-                    };
-
-                    return (
-                        <div className={`${rarityColors[rarityFromType]} text-white px-4 py-1 rounded-full text-sm font-bold mb-3`}>
-                          {rarityNames[rarityFromType]}
-                        </div>
-                    );
-                  })()}
 
                   <p className="text-center mb-4">
                     축하합니다! 공부를 열심히 하여 새로운 캐릭터를 획득했습니다!

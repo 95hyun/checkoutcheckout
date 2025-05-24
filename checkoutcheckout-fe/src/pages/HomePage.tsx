@@ -30,21 +30,22 @@ const HomePage: React.FC = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
           <div className="md:w-1/2 flex justify-center">
-            <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
-              </svg>
+            <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 character-legendary_tralellotralala character-image transform -rotate-12"></div>
+                <div className="w-32 h-32 character-common_rabbit character-image transform rotate-12"></div>
+              </div>
             </div>
           </div>
           <div className="md:w-1/2">
             <h2 className="text-2xl font-bold mb-4">
-              <span className="text-red-600">알림메시지</span> 원하는 시간으로,<br />
-              미리 설정한 문구 그대로
+              <span className="text-red-600">열심히 공부하면</span> 랜덤으로<br />
+              캐릭터 카드를 얻어요
             </h2>
             <p className="text-gray-600 mb-4">
               공부하는 습관을 형성하는데<br />
               도움을 드리기 위해서<br />
-              간단한 설정을 통해 자동으로 알림을 보내드려요
+              게이미피케이션 요소를 추가했어요
             </p>
           </div>
         </div>
@@ -66,8 +67,8 @@ const HomePage: React.FC = () => {
               다른 스터디와 경쟁
             </h2>
             <p className="text-gray-600 mb-4">
-              같은 스터디원들의 공부시간 기록을 보고 자극도 받고<br />
-              다른 스터디와 공부시간 랭킹 경쟁할 수 있어요
+              스터디원끼리 공부 기록을 보고 자극도 받고<br />
+              다른 스터디와 공부 시간으로 경쟁할 수 있어요
             </p>
           </div>
         </div>
@@ -86,22 +87,27 @@ const HomePage: React.FC = () => {
             {
               name: '현OO',
               role: '백엔드 개발자',
-              text: '자격증 공부를 하는데, 준비하는 사람들끼리 스터디를 만들어서 전부 합격했어요!',
+              text: '같은 자격증을 목표로 뜻에 맞는 사람끼리 스터디에 가입해서 서로 공부시간이 체크되니까 자극이 됐어요',
+              character: 'rare_wolf'
             },
             {
-              name: '이OO',
+              name: '구OO',
               role: 'LG CNS 부트캠프 학생',
-              text: '잔디 채우는거랑 랭킹 등수 올리는 재미가 훌륭하네요..',
+              text: '전설 카드 얻으려고 매일 하고있습니다. 전설카드 주세요',
+              character: 'legendary_doge'
             },
             {
-              name: '남OO',
-              role: '고등학생',
-              text: '6시간 채우고 얻는 카드를 모으는 재미로 자연스레 공부습관을 들일 수 있었어요.',
+              name: '정OO',
+              role: '취준생',
+              text: '코딩테스트 준비하느라 매일 공부 중이었는데 더 재밌게 할 수 있게 됐어요',
+              character: 'epic_dragon'
             },
           ].map((item, idx) => (
               <div key={idx} className="bg-white p-6 rounded-lg shadow-sm flex flex-col justify-between h-full">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+                  <div className="w-12 h-12 bg-gray-100 rounded-full mr-4 overflow-hidden">
+                    <div className={`w-full h-full character-${item.character} character-image`}></div>
+                  </div>
                   <div>
                     <h3 className="font-bold">{item.name}</h3>
                     <p className="text-sm text-gray-500">{item.role}</p>
@@ -117,8 +123,8 @@ const HomePage: React.FC = () => {
       <section className="py-24 bg-red-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
-            이미 많은 유저들이<br />
-            째깍째깍을 이용하고 있습니다.
+            째깍째깍으로<br />
+            성취감을 올리세요
           </h2>
           <Link to="/signup" className="inline-block bg-black text-white py-3 px-10 rounded-full font-medium hover:bg-gray-800 transition-colors">
             무료로 시작하기
