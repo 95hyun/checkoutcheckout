@@ -62,3 +62,34 @@ export const getIntensityColor = (durationInSeconds: number): string => {
   if (intensity < 0.8) return '#216e39'; // 많음
   return '#0e4429'; // 매우 많음
 };
+
+/**
+ * 한국 시간 기준으로 오늘 날짜를 YYYY-MM-DD 형식으로 반환합니다.
+ * 캐릭터 획득 날짜 비교 등에서 사용됩니다.
+ */
+export const getTodayKST = (): string => {
+  const now = new Date();
+  // 한국 시간으로 변환 (UTC+9)
+  const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  
+  const year = kstTime.getUTCFullYear();
+  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(kstTime.getUTCDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+};
+
+/**
+ * 주어진 날짜를 한국 시간 기준으로 YYYY-MM-DD 형식으로 변환합니다.
+ */
+export const formatDateKST = (date: Date | string): string => {
+  const dateObj = new Date(date);
+  // 한국 시간으로 변환 (UTC+9)
+  const kstTime = new Date(dateObj.getTime() + (9 * 60 * 60 * 1000));
+  
+  const year = kstTime.getUTCFullYear();
+  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(kstTime.getUTCDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+};

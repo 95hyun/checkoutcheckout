@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Character, Rarity } from '../types';
 import { characterApi } from '../api/characterApi';
 import { getRarityFromType } from '../constants/characterConstants';
+import { getTodayKST, formatDateKST } from '../utils/timeUtils';
 
 interface CharacterStore {
   characters: Character[];
@@ -27,6 +28,23 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
     try {
       set({ loading: true, error: null });
       
+      // 기존 로컬 스토리지 데이터 검증 및 정리
+      const storedCharacterData = localStorage.getItem('today_character');
+      if (storedCharacterData) {
+        try {
+          const { date } = JSON.parse(storedCharacterData);
+          const today = getTodayKST();
+          // 날짜가 다르면 로컬 스토리지 정리
+          if (date !== today) {
+            localStorage.removeItem('today_character');
+            console.log('이전 날짜의 캐릭터 데이터를 정리했습니다:', date, '!==', today);
+          }
+        } catch (error) {
+          localStorage.removeItem('today_character');
+          console.log('잘못된 형식의 캐릭터 데이터를 정리했습니다.');
+        }
+      }
+      
       // 백엔드 서버 연결 시도
       try {
         const characters = await characterApi.getUserCharacters();
@@ -50,10 +68,10 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
           return { ...char };
         });
         
-        // 오늘 획득한 캐릭터 확인
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        // 오늘 획득한 캐릭터 확인 - 한국 시간 기준
+        const today = getTodayKST();
         const todayCharacter = normalizedCharacters.find(c => 
-          new Date(c.acquiredDate).toISOString().split('T')[0] === today
+          formatDateKST(c.acquiredDate) === today
         ) || null;
         
         // 로컬 스토리지에 저장
@@ -74,8 +92,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
         // 백엔드 연결 실패 - 로컬 데이터 사용
         console.warn('백엔드 서버에 연결할 수 없어 로컬 데이터를 사용합니다:', apiError);
         
-        // 로컬 스토리지에서 오늘 캐릭터 가져오기
-        const today = new Date().toISOString().split('T')[0];
+        // 로컬 스토리지에서 오늘 캐릭터 가져오기 - 한국 시간 기준
+        const today = getTodayKST();
         const storedCharacterData = localStorage.getItem('today_character');
         let characters: Character[] = [];
         let todayCharacter = null;
@@ -137,8 +155,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
           loading: false 
         }));
         
-        // 성공 시 로컬 스토리지 업데이트 (백업)
-        const today = new Date().toISOString().split('T')[0];
+        // 성공 시 로컬 스토리지 업데이트 (백업) - 한국 시간 기준
+        const today = getTodayKST();
         localStorage.setItem('today_character', JSON.stringify({
           date: today,
           character: normalizedCharacter
@@ -165,8 +183,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
           loading: false 
         }));
         
-        // 로컬 스토리지에 저장
-        const today = new Date().toISOString().split('T')[0];
+        // 로컬 스토리지에 저장 - 한국 시간 기준
+        const today = getTodayKST();
         localStorage.setItem('today_character', JSON.stringify({
           date: today,
           character: mockCharacter
@@ -189,8 +207,8 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
       set({ loading: true, error: null });
       console.log("캐릭터 획득 상태 확인 시작");
       
-      // 로컬 스토리지에서 먼저 확인
-      const today = new Date().toISOString().split('T')[0];
+      // 로컬 스토리지에서 먼저 확인 - 한국 시간 기준
+      const today = getTodayKST();
       const storedCharacter = localStorage.getItem('today_character');
       
       if (storedCharacter) {
@@ -226,10 +244,10 @@ const useCharacterStore = create<CharacterStore>((set, get) => ({
               // 타입 값 그대로 유지
               type: character.type || '',
               // 희귀도가 없는 경우 추출
-              rarity: character.rarity || getRarityForCharacter(character.type)
+              rarity: character.rarity || getRarityFromType(character.type)
             };
             
-            // 로컬 스토리지에도 저장
+            // 로컬 스토리지에도 저장 - 한국 시간 기준
             localStorage.setItem('today_character', JSON.stringify({
               date: today,
               character: todayCharacter

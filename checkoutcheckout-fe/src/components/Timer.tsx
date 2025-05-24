@@ -253,9 +253,9 @@ const Timer: React.FC = () => {
     setShowCharacterAlert(false);
   };
 
-  const navigateToDashboard = () => {
+  const navigateToProfile = () => {
     setShowCharacterAlert(false);
-    navigate('/dashboard');
+    navigate('/profile');
   };
 
   // 오늘 계획 수립으로 이동
@@ -395,29 +395,7 @@ const Timer: React.FC = () => {
             </div>
         )}
 
-        {/* 오늘 및 이번주 누적 공부 시간 */}
-        <div className="w-full mt-6 border-t pt-6">
-          <h3 className="text-xl font-bold mb-4">누적 공부 시간</h3>
-          <div className="flex flex-col space-y-3">
-            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <FaClock className="mr-2 text-blue-500" />
-                <span className="text-gray-700 font-medium">오늘 공부 시간</span>
-              </div>
-              <span className="font-mono font-bold text-blue-700">{formatSeconds(todayStudyTime)}</span>
-            </div>
-
-            <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg">
-              <div className="flex items-center">
-                <FaCalendarAlt className="mr-2 text-indigo-500" />
-                <span className="text-gray-700 font-medium">이번주 공부 시간</span>
-              </div>
-              <span className="font-mono font-bold text-indigo-700">{formatSeconds(weeklyStudyTime)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 오늘의 공부 계획 섹션 */}
+        {/* 학습 요약 */}
         <div className="w-full mt-6 border-t pt-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-bold flex items-center">
@@ -510,10 +488,10 @@ const Timer: React.FC = () => {
                       계속 공부하기
                     </button>
                     <button
-                        onClick={navigateToDashboard}
+                        onClick={navigateToProfile}
                         className="btn-primary px-4 py-2"
                     >
-                      대시보드로 이동
+                      프로필로 이동
                     </button>
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import Timer from '../components/Timer';
 import useTimerStore from '../store/timerStore';
 import useCharacterStore from '../store/characterStore';
-import { FaGem } from 'react-icons/fa';
+import { FaGem, FaClock, FaCalendarAlt } from 'react-icons/fa';
 import { formatSeconds, formatSecondsToReadable } from '../utils/timeUtils';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -180,6 +180,7 @@ const DashboardPage: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
                   <div className="flex items-center text-sm">
+                    <FaClock className="mr-2 text-blue-500" />
                     <span>오늘 공부 시간</span>
                   </div>
                   <span className="font-mono font-bold text-blue-700">
@@ -188,6 +189,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between items-center p-2 bg-indigo-50 rounded-lg">
                   <div className="flex items-center text-sm">
+                    <FaCalendarAlt className="mr-2 text-indigo-500" />
                     <span>이번주 공부 시간</span>
                   </div>
                   <span className="font-mono font-bold text-indigo-700">
