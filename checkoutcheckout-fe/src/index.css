@@ -1,30 +1,225 @@
 @import url('./index.characters.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.02em;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.04em;
+    line-height: 1.3;
+  }
+  
+  button, a {
+    transition: all 0.2s ease;
+  }
+}
+
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply inline-block px-6 py-3 font-medium rounded-lg text-center transition-colors;
   }
   
   .btn-primary {
-    @apply btn bg-primary text-white hover:bg-blue-600 focus:ring-blue-500;
+    @apply bg-red-600 text-white hover:bg-red-700 px-6 py-3 rounded-lg font-medium;
+  }
+  
+  .btn-primary-sm {
+    @apply bg-red-600 text-white hover:bg-red-700 px-3 py-1 rounded-lg text-sm font-medium;
   }
   
   .btn-secondary {
-    @apply btn bg-secondary text-white hover:bg-green-600 focus:ring-green-500;
+    @apply bg-black text-white hover:bg-gray-800 rounded-lg;
   }
   
   .btn-outline {
-    @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+    @apply border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg;
   }
   
   .input {
-    @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary;
+    @apply px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md p-6;
+    @apply bg-white p-6 rounded-lg shadow-sm;
   }
+  
+  .container-narrow {
+    @apply max-w-3xl mx-auto px-4;
+  }
+  
+  .container-wide {
+    @apply max-w-5xl mx-auto px-4;
+  }
+}
+
+/* 프로필 이미지 관련 스타일 */
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-edit-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #DC2626;
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-edit-button:hover {
+  background-color: #B91C1C;
+}
+
+/* 캐릭터 모달 관련 스타일 */
+.character-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.character-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.character-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+}
+
+.character-modal-content {
+  position: relative;
+  width: 300px;
+  height: 420px;
+  z-index: 51;
+  perspective: 1000px;
+}
+
+.card-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(0) rotateY(0);
+  cursor: grab;
+}
+
+.card-container:active {
+  cursor: grabbing;
+}
+
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.card-face.holographic:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 0, 0, 0.3),
+    rgba(255, 165, 0, 0.3),
+    rgba(255, 255, 0, 0.3),
+    rgba(0, 128, 0, 0.3),
+    rgba(0, 0, 255, 0.3),
+    rgba(75, 0, 130, 0.3),
+    rgba(238, 130, 238, 0.3)
+  );
+  background-size: 200% 200%;
+  animation: holographicAnimation 3s linear infinite;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+@keyframes holographicAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+.card-shine {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2) inset;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.character-modal-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform-origin: center;
 }

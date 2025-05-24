@@ -10,10 +10,28 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+        log.error("BusinessException: {}", e.getMessage());
+        HttpStatus status = e.getStatus() != null ? e.getStatus() : HttpStatus.BAD_REQUEST;
+        
+        ErrorResponse response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .status(status)
+                .code(e.getCode())
+                .build();
+        
+        return ResponseEntity.status(status).body(response);
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
@@ -66,6 +84,39 @@ public class GlobalExceptionHandler {
                 .message("입력값이 올바르지 않습니다.")
                 .status(HttpStatus.BAD_REQUEST)
                 .code("INVALID_INPUT")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
+        log.error("NoSuchElementException: ", e);
+        ErrorResponse response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .status(HttpStatus.NOT_FOUND)
+                .code("RESOURCE_NOT_FOUND")
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+    
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        log.error("MaxUploadSizeExceededException: ", e);
+        ErrorResponse response = ErrorResponse.builder()
+                .message("파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다.")
+                .status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .code("FILE_TOO_LARGE")
+                .build();
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(response);
+    }
+    
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ErrorResponse> handleMultipartException(MultipartException e) {
+        log.error("MultipartException: ", e);
+        ErrorResponse response = ErrorResponse.builder()
+                .message("파일 업로드 중 오류가 발생했습니다.")
+                .status(HttpStatus.BAD_REQUEST)
+                .code("MULTIPART_ERROR")
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

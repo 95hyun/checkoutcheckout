@@ -7,8 +7,10 @@ import com.toy.checkoutcheckout.domain.timer.entity.TimerSession;
 import com.toy.checkoutcheckout.domain.timer.repository.TimerSessionRepository;
 import com.toy.checkoutcheckout.domain.user.entity.User;
 import com.toy.checkoutcheckout.domain.user.repository.UserRepository;
+import com.toy.checkoutcheckout.global.error.BusinessException;
+import com.toy.checkoutcheckout.global.error.ErrorCode;
+import com.toy.checkoutcheckout.global.error.TimerBusinessException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +31,11 @@ public class TimerService {
     @Transactional
     public TimerSessionResponse startTimer(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 이미 활성화된 타이머가 있는지 확인
         timerSessionRepository.findByUserAndIsActiveTrue(user).ifPresent(activeSession -> {
-            throw com.toy.checkoutcheckout.global.error.TimerBusinessException.TIMER_ALREADY_ACTIVE;
+            throw TimerBusinessException.TIMER_ALREADY_ACTIVE;
         });
 
         LocalDateTime now = LocalDateTime.now();
@@ -59,10 +61,10 @@ public class TimerService {
     @Transactional
     public TimerSessionResponse stopTimer(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         TimerSession activeSession = timerSessionRepository.findByUserAndIsActiveTrue(user)
-                .orElseThrow(() -> com.toy.checkoutcheckout.global.error.TimerBusinessException.NO_ACTIVE_TIMER);
+                .orElseThrow(() -> TimerBusinessException.NO_ACTIVE_TIMER);
 
         // 타이머 중지 처리
         activeSession.stopTimer();
@@ -82,7 +84,7 @@ public class TimerService {
     @Transactional(readOnly = true)
     public TimerStatusResponse getTimerStatus(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         TimerSession activeSession = timerSessionRepository.findByUserAndIsActiveTrue(user).orElse(null);
         return TimerStatusResponse.from(activeSession);
@@ -91,7 +93,7 @@ public class TimerService {
     @Transactional(readOnly = true)
     public DailyStudyTimeResponse getStudyTimeHistory(String email, LocalDate startDate, LocalDate endDate) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         List<Object[]> results = timerSessionRepository.findDailyStudyTimeByUserAndDateRange(user, startDate, endDate);
         
@@ -117,7 +119,7 @@ public class TimerService {
     @Transactional(readOnly = true)
     public List<TimerSessionResponse> getRecentSessions(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         List<TimerSession> sessions = timerSessionRepository.findByUserOrderByStartTimeDesc(user);
         return sessions.stream()

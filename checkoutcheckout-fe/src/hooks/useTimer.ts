@@ -11,10 +11,10 @@ export const useTimer = () => {
   const { startTimer: startTimerApi, stopTimer: stopTimerApi, isLoading, error, resetError } = useTimerStore();
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
-  
-  // useRef 사용으로 재렌더링 방지
   const intervalIdRef = useRef<number | null>(null);
-  const initializingRef = useRef<boolean>(false);
+  
+  // Using useRef to prevent unnecessary re-renders and update loops
+  const updatingTimerRef = useRef<boolean>(false);
 
   // 로컬 스토리지 초기화/정리 함수
   const clearLocalTimerData = useCallback(() => {
@@ -32,18 +32,18 @@ export const useTimer = () => {
     }
   }, []);
 
-  // 브라우저 세션에서 타이머 상태 초기화 - 마운트 시 한 번만 실행
+  // 브라우저 세션에서 타이머 상태 초기화 - 컴포넌트 마운트 시 한 번만 실행
   useEffect(() => {
-    // 이미 초기화 중이면 중단
-    if (initializingRef.current) return;
-    
-    initializingRef.current = true;
+    // Prevent update loops by checking the ref
+    if (updatingTimerRef.current) return;
     
     const isTimerActive = localStorage.getItem(TIMER_ACTIVE_KEY) === 'true';
     const startTimestamp = localStorage.getItem(TIMER_START_KEY);
     
     if (isTimerActive && startTimestamp) {
       try {
+        updatingTimerRef.current = true;
+        
         const startTime = parseInt(startTimestamp, 10);
         const now = Date.now();
         
@@ -51,7 +51,7 @@ export const useTimer = () => {
         if (startTime > now || now - startTime > 24 * 60 * 60 * 1000) {
           console.warn('잘못된 타이머 시작 시간이 감지되었습니다. 타이머를 초기화합니다.');
           clearLocalTimerData();
-          initializingRef.current = false;
+          updatingTimerRef.current = false;
           return;
         }
         
@@ -61,45 +61,45 @@ export const useTimer = () => {
         setIsActive(true);
         
         // 1초마다 타이머 업데이트
-        clearTimerInterval(); // 기존 인터벌 제거
+        if (intervalIdRef.current) {
+          clearTimerInterval();
+        }
         
         intervalIdRef.current = window.setInterval(() => {
           setElapsedTime(prev => prev + 1);
         }, 1000);
         
         console.log('브라우저 세션에서 타이머가 복원되었습니다:', diffSeconds, '초');
+        updatingTimerRef.current = false;
       } catch (error) {
         console.error('타이머 초기화 오류:', error);
         clearLocalTimerData();
-      } finally {
-        initializingRef.current = false;
+        updatingTimerRef.current = false;
       }
-    } else {
-      initializingRef.current = false;
     }
     
     // 컴포넌트 언마운트 시 인터벌 정리
     return () => {
       clearTimerInterval();
     };
-  }, [clearLocalTimerData, clearTimerInterval]); // 의존성 배열 추가
+  }, [clearLocalTimerData, clearTimerInterval]);
 
   // 시작하기 버튼 핸들러
   const handleStartTimer = useCallback(async () => {
-    if (isActive || initializingRef.current) return; // 이미 활성화된 상태이거나 초기화 중이면 중복 시작 방지
+    if (isActive || updatingTimerRef.current) return; // 이미 활성화된 상태이거나 업데이트 중이면 중복 시작 방지
     
     try {
-      initializingRef.current = true;
+      updatingTimerRef.current = true;
+      
+      // 로컬 타이머 시작
+      setElapsedTime(0);
+      setIsActive(true);
       
       // 현재 시간 저장
       const startTime = Date.now();
       localStorage.setItem(TIMER_START_KEY, startTime.toString());
       localStorage.setItem(TIMER_ACTIVE_KEY, 'true');
       localStorage.setItem(TIMER_ELAPSED_SECONDS_KEY, '0');
-      
-      // 로컬 타이머 시작
-      setElapsedTime(0);
-      setIsActive(true);
       
       // 이전 인터벌 정리 후 새 인터벌 시작
       clearTimerInterval();
@@ -116,20 +116,20 @@ export const useTimer = () => {
       }
       
       console.log('타이머가 시작되었습니다:', startTime);
+      updatingTimerRef.current = false;
     } catch (error) {
       console.error('타이머 시작 오류:', error);
-      // 에러 발생 시에도 로컬 타이머는 계속 유지 (네트워크 오류 등에 대응)
-    } finally {
-      initializingRef.current = false;
+      // 에러 발생 시 로컬 타이머는 계속 유지 (네트워크 오류 등에 대응)
+      updatingTimerRef.current = false;
     }
   }, [isActive, clearTimerInterval, startTimerApi]);
 
   // 종료하기 버튼 핸들러
   const handleStopTimer = useCallback(async () => {
-    if (!isActive || initializingRef.current) return; // 활성화되지 않은 상태이거나 초기화 중이면 무시
+    if (!isActive || updatingTimerRef.current) return; // 활성화되지 않은 상태이거나 업데이트 중이면 무시
     
     try {
-      initializingRef.current = true;
+      updatingTimerRef.current = true;
       
       // 현재 경과 시간 저장
       const currentElapsedTime = elapsedTime;
@@ -138,22 +138,23 @@ export const useTimer = () => {
       setIsActive(false);
       clearTimerInterval();
       
-      // 로컬 스토리지 정리 (항상 클라이언트 측 상태는 초기화)
+      // 로컬 스토리지 정리
       clearLocalTimerData();
       
       // 백엔드에 타이머 종료 요청
       await stopTimerApi();
       
       console.log('타이머가 종료되었습니다. 총 경과 시간:', currentElapsedTime, '초');
+      updatingTimerRef.current = false;
     } catch (error) {
       console.error('타이머 종료 오류:', error);
       
-      // 오류 발생 시에도 일단 UI에서는 정지 상태로 표시하고 로컬 스토리지 정리
+      // 오류 발생 시에도 일단 UI에서는 정지 상태로 표시
+      // 하지만 로컬 데이터는 제거하여 새로 시작할 수 있도록 함
       setIsActive(false);
       clearTimerInterval();
       clearLocalTimerData();
-    } finally {
-      initializingRef.current = false;
+      updatingTimerRef.current = false;
     }
   }, [isActive, elapsedTime, stopTimerApi, clearTimerInterval, clearLocalTimerData]);
 

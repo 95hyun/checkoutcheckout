@@ -32,7 +32,7 @@ public class CharacterController {
             @RequestBody CharacterAcquireRequest request) {
         User user = userRepository.findById(currentUser.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        CharacterResponse response = characterService.acquireCharacter(user, request.getCharacterType());
+        CharacterResponse response = characterService.acquireCharacter(user, request.getCharacterType(), request.getRarity());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
     

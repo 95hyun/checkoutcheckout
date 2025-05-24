@@ -16,6 +16,7 @@ public class CurrentUser implements UserDetails {
     private final String email;
     private final String nickname;
     private final String password;
+    private final String characterType;
     private final Collection<? extends GrantedAuthority> authorities;
     
     public CurrentUser(User user) {
@@ -23,6 +24,7 @@ public class CurrentUser implements UserDetails {
         this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.password = user.getPassword();
+        this.characterType = user.getCharacterType();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
     

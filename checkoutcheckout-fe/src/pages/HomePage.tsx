@@ -1,340 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { FaClock, FaChartBar, FaTrophy, FaLaptop, FaGem, FaArrowRight, FaFire, FaStar } from 'react-icons/fa';
-
-// 애니메이션 타이머 디스플레이
-const AnimatedTimer = () => {
-  const [time, setTime] = useState("00:00:00");
-  
-  useEffect(() => {
-    // 매 초마다 시간 업데이트
-    const times = ["00:10:25", "01:45:30", "02:30:15", "03:20:45"];
-    let index = 0;
-    
-    const interval = setInterval(() => {
-      setTime(times[index]);
-      index = (index + 1) % times.length;
-    }, 2000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  return (
-    <div className="text-6xl font-mono font-bold bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent mb-4 transition-all duration-700 ease-in-out">
-      {time}
-    </div>
-  );
-};
-
-// 캐릭터 카드 미리보기
-const CharacterPreview = () => {
-  const characters = ['cleric', 'knight', 'wizard', 'archer'];
-  const [activeIndex, setActiveIndex] = useState(0);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % characters.length);
-    }, 3000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  return (
-    <div className="relative w-24 h-24 bg-white rounded-lg shadow-xl overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-300">
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-200 to-amber-400 opacity-70"></div>
-      <div className={`absolute inset-2 bg-white rounded-md overflow-hidden flex items-center justify-center`}>
-        <div className={`w-full h-full character-${characters[activeIndex]} character-image`}></div>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs text-center py-1">
-        레어!
-      </div>
-    </div>
-  );
-};
-
-// 커스텀 뱃지 컴포넌트
-const Badge = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-sm transform transition-transform hover:scale-105">
-    {children}
-  </span>
-);
 
 const HomePage: React.FC = () => {
-  // 스크롤 위치에 따른 효과를 위한 상태
-  const [scrollY, setScrollY] = useState(0);
-  
-  // 스크롤 이벤트 처리
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
+      {/* Navbar 추가 */}
       <Navbar />
       
-      {/* 히어로 섹션 */}
-      <div className="relative bg-gradient-to-br from-primary to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between relative">
-          {/* 좌측 컨텐츠 */}
-          <div className="md:w-1/2 mb-12 md:mb-0 z-10">
-            <Badge>New Features 2025</Badge>
-            
-            <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-4 leading-tight">
-              <span className="block">효율적인 공부</span>
-              <span className="block">
-                시간 관리,{" "}
-                <span className="bg-white text-primary px-2 rounded-md transform inline-block rotate-1">
-                  CheckoutCheckout
-                </span>
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl mb-8 text-purple-100">
-              공부 시간을 정확하게 기록하고, 통계로 확인하며,<br />
-              <span className="font-bold underline decoration-wavy decoration-yellow-300 underline-offset-4">
-                특별한 캐릭터 카드를 수집
-              </span>해보세요!
-            </p>
-
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/signup" className="btn-primary shadow-lg transform transition-transform hover:scale-105 hover:-rotate-1 group">
-                무료로 시작하기
-                <FaArrowRight className="ml-2 inline-block transition-transform group-hover:translate-x-1" />
-              </Link>
-              <Link to="/login" className="btn bg-white text-primary hover:bg-opacity-90 shadow-lg transform transition-transform hover:scale-105 hover:rotate-1">
-                로그인
-              </Link>
-            </div>
-            
-            {/* 배지 아이콘 */}
-            <div className="flex mt-8 space-x-2">
-              <div className="flex items-center bg-black bg-opacity-30 rounded-full px-3 py-1 text-sm">
-                <FaFire className="text-yellow-300 mr-1" /> 랭킹 경쟁
-              </div>
-              <div className="flex items-center bg-black bg-opacity-30 rounded-full px-3 py-1 text-sm">
-                <FaStar className="text-yellow-300 mr-1" /> 다른 사람들과 스터디
-              </div>
+      {/* 헤더 영역 */}
+      <header className="max-w-3xl mx-auto px-4 py-24 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6">
+          째깍째깍!
+          <br />
+          당신의 시간은 지금도 흘러가고 있습니다
+        </h1>
+        <p className="text-gray-600 mb-12">
+          공부 시간을 기록하고, 수집하고, 경쟁해요!<br />
+          스터디를 만들어서 경쟁하면 공부가 더 재밌을거에요
+        </p>
+        <div className="flex justify-center">
+          <Link to="/signup" className="bg-red-600 text-white py-3 px-10 rounded-full font-medium hover:bg-red-700 transition-colors">
+            무료로 시작하기
+          </Link>
+        </div>
+      </header>
+      
+      {/* 첫 번째 기능 소개 섹션 */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
+          <div className="md:w-1/2 flex justify-center">
+            <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
+              </svg>
             </div>
           </div>
-          
-          {/* 우측 타이머 카드 */}
-          <div className="md:w-1/2 flex justify-center z-10">
-            <div className="bg-white rounded-2xl shadow-2xl p-6 w-80 transform hover:rotate-1 transition-transform">
-              <div className="text-gray-800 text-center">
-                <h3 className="text-lg font-bold text-gray-500 mb-2">내 공부 시간</h3>
-                <AnimatedTimer />
-                
-                <div className="flex justify-center space-x-4 relative">
-                  <button className="btn-primary shadow-lg transform transition-transform hover:scale-105 z-10">
-                    시작하기
-                  </button>
-                  <button className="btn bg-error text-white shadow-lg transform transition-transform hover:scale-105 z-10">
-                    종료하기
-                  </button>
-                  
-                  {/* 캐릭터 카드 미리보기 - 부유하는 효과 */}
-                  <div className="absolute -top-8 -right-12 animate-float">
-                    <CharacterPreview />
+          <div className="md:w-1/2">
+            <h2 className="text-2xl font-bold mb-4">
+              <span className="text-red-600">알림메시지</span> 원하는 시간으로,<br />
+              미리 설정한 문구 그대로
+            </h2>
+            <p className="text-gray-600 mb-4">
+              공부하는 습관을 형성하는데<br />
+              도움을 드리기 위해서<br />
+              간단한 설정을 통해 자동으로 알림을 보내드려요
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      {/* 두 번째 기능 소개 섹션 */}
+      <section className="py-20">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row-reverse items-center gap-10">
+          <div className="md:w-1/2 flex justify-center">
+            <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+          </div>
+          <div className="md:w-1/2">
+            <h2 className="text-2xl font-bold mb-4">
+              스터디에 가입해서<br />
+              다른 스터디와 경쟁
+            </h2>
+            <p className="text-gray-600 mb-4">
+              같은 스터디원들의 공부시간 기록을 보고 자극도 받고<br />
+              다른 스터디와 공부시간 랭킹 경쟁할 수 있어요
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      {/* 사용자 리뷰 섹션 */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 text-center mb-12">
+          <h2 className="text-2xl font-bold mb-2">
+            많은 개발자들이 <span className="text-red-600">째깍째깍</span>을 애용하고 있습니다 👏
+          </h2>
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 grid md:grid-cols-3 gap-6">
+          {[
+            {
+              name: '현OO',
+              role: '백엔드 개발자',
+              text: '자격증 공부를 하는데, 준비하는 사람들끼리 스터디를 만들어서 전부 합격했어요!',
+            },
+            {
+              name: '이OO',
+              role: 'LG CNS 부트캠프 학생',
+              text: '잔디 채우는거랑 랭킹 등수 올리는 재미가 훌륭하네요..',
+            },
+            {
+              name: '남OO',
+              role: '고등학생',
+              text: '6시간 채우고 얻는 카드를 모으는 재미로 자연스레 공부습관을 들일 수 있었어요.',
+            },
+          ].map((item, idx) => (
+              <div key={idx} className="bg-white p-6 rounded-lg shadow-sm flex flex-col justify-between h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+                  <div>
+                    <h3 className="font-bold">{item.name}</h3>
+                    <p className="text-sm text-gray-500">{item.role}</p>
                   </div>
                 </div>
+                <p className="text-gray-600 mt-auto">"{item.text}"</p>
               </div>
-            </div>
-          </div>
+          ))}
         </div>
-        
-        {/* 하단 물결 효과 */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-background" style={{
-          clipPath: "polygon(100% 0%, 0% 0%, 0% 100%, 5% 98%, 10% 99%, 15% 98%, 20% 97%, 25% 96%, 30% 97%, 35% 98%, 40% 99%, 45% 98%, 50% 97%, 55% 96%, 60% 95%, 65% 96%, 70% 97%, 75% 98%, 80% 99%, 85% 98%, 90% 97%, 95% 96%, 100% 95%)"
-        }}></div>
-      </div>
-      
-      {/* 특징 섹션 */}
-      <div className="relative max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10">
-          <div className="flex justify-center mb-6">
-            <Badge>Special Features</Badge>
-          </div>
-          
-          <h2 className="text-3xl font-extrabold text-center mb-16 bg-gradient-to-r from-primary to-fuchsia-600 bg-clip-text text-transparent">
-            째깍째깍의 특별한 기능들
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* 카드 1 */}
-            <div className="card flex flex-col items-center text-center group hover:shadow-xl transition-shadow overflow-hidden relative">
-              <div className="absolute inset-0 bg-blue-50 transform scale-0 group-hover:scale-100 transition-transform origin-bottom-right"></div>
-              
-              <div className="bg-blue-100 p-4 rounded-full mb-4 relative z-10 transform transition-transform group-hover:scale-110 group-hover:rotate-3">
-                <FaClock className="text-3xl text-primary" />
-              </div>
-              
-              <h3 className="text-xl font-bold mb-2 relative z-10">타이머 기능</h3>
-              
-              <p className="text-gray-600 relative z-10">
-                공부 시간을 정확하게 측정하고 기록합니다. 브라우저를 닫아도 계속 기록됩니다.
-              </p>
-            </div>
-            
-            {/* 카드 2 */}
-            <div className="card flex flex-col items-center text-center group hover:shadow-xl transition-shadow overflow-hidden relative">
-              <div className="absolute inset-0 bg-green-50 transform scale-0 group-hover:scale-100 transition-transform origin-bottom-right"></div>
-              
-              <div className="bg-green-100 p-4 rounded-full mb-4 relative z-10 transform transition-transform group-hover:scale-110 group-hover:rotate-3">
-                <FaChartBar className="text-3xl text-green-600" />
-              </div>
-              
-              <h3 className="text-xl font-bold mb-2 relative z-10">통계 분석</h3>
-              
-              <p className="text-gray-600 relative z-10">
-                일별, 주별, 월별 공부 시간을 한눈에 확인하고 성장 패턴을 분석합니다.
-              </p>
-            </div>
-            
-            {/* 카드 3 */}
-            <div className="card flex flex-col items-center text-center group hover:shadow-xl transition-shadow overflow-hidden relative">
-              <div className="absolute inset-0 bg-purple-50 transform scale-0 group-hover:scale-100 transition-transform origin-bottom-right"></div>
-              
-              <div className="bg-purple-100 p-4 rounded-full mb-4 relative z-10 transform transition-transform group-hover:scale-110 group-hover:rotate-3">
-                <FaTrophy className="text-3xl text-purple-600" />
-              </div>
-              
-              <h3 className="text-xl font-bold mb-2 relative z-10">랭킹 시스템</h3>
-              
-              <p className="text-gray-600 relative z-10">
-                다른 사용자들과 공부 시간을 비교하고 순위를 확인하며 동기부여를 얻으세요.
-              </p>
-            </div>
-            
-            {/* 카드 4 */}
-            <div className="card flex flex-col items-center text-center group hover:shadow-xl transition-shadow overflow-hidden relative">
-              <div className="absolute inset-0 bg-yellow-50 transform scale-0 group-hover:scale-100 transition-transform origin-bottom-right"></div>
-              
-              <div className="bg-yellow-100 p-4 rounded-full mb-4 relative z-10 transform transition-transform group-hover:scale-110 group-hover:rotate-3">
-                <FaGem className="text-3xl text-amber-500" />
-              </div>
-              
-              <h3 className="text-xl font-bold mb-2 relative z-10">캐릭터 컬렉션</h3>
-              
-              <p className="text-gray-600 relative z-10">
-                매일 6시간 이상 공부하면 특별한 캐릭터 카드를 획득하고 컬렉션을 완성하세요.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* 통계 하이라이트 섹션 */}
-      <div className="bg-gray-900 text-white py-16 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">놀라운 통계..가 생겼으면!</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="p-6 rounded-lg bg-gray-800 bg-opacity-50 transform hover:scale-105 transition-transform">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent mb-2">
-                7,000+
-              </div>
-              <div className="text-gray-400">사용자</div>
-            </div>
-            
-            <div className="p-6 rounded-lg bg-gray-800 bg-opacity-50 transform hover:scale-105 transition-transform">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent mb-2">
-                70,000+
-              </div>
-              <div className="text-gray-400">기록된 시간</div>
-            </div>
-            
-            <div className="p-6 rounded-lg bg-gray-800 bg-opacity-50 transform hover:scale-105 transition-transform">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent mb-2">
-                20,000+
-              </div>
-              <div className="text-gray-400">수집된 카드</div>
-            </div>
-            
-            <div className="p-6 rounded-lg bg-gray-800 bg-opacity-50 transform hover:scale-105 transition-transform">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                4.9/5
-              </div>
-              <div className="text-gray-400">사용자 평점</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
       
       {/* CTA 섹션 */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 py-20 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <Badge>지금 시작하세요</Badge>
-          
-          <h2 className="text-3xl font-extrabold mt-6 mb-6 bg-gradient-to-r from-primary to-fuchsia-600 bg-clip-text text-transparent">
-            지금 바로 째깍째깍을 시작하세요!
+      <section className="py-24 bg-red-600 text-white text-center">
+        <div className="max-w-3xl mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">
+            이미 많은 유저들이<br />
+            째깍째깍을 이용하고 있습니다.
           </h2>
-          
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            CheckoutCheckout와 함께 더 효율적인 학습 습관을 만들어보세요.
-            <span className="font-bold">철저한 시간 관리가 성공의 비결입니다.</span>
-          </p>
-          
-          <Link to="/signup" className="btn-primary text-lg px-8 py-3 shadow-xl transform transition-transform hover:scale-105 inline-flex items-center">
-            무료로 가입하기
-            <FaArrowRight className="ml-2" />
+          <Link to="/signup" className="inline-block bg-black text-white py-3 px-10 rounded-full font-medium hover:bg-gray-800 transition-colors">
+            무료로 시작하기
           </Link>
-          
-          <div className="mt-12 text-sm text-gray-500">
-            이미 24,000명 이상의 학생들이 째깍째깍을 통해 공부 시간을 관리하고 있습니다.
-          </div>
         </div>
-      </div>
+      </section>
       
       {/* 푸터 */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-8 md:mb-0">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                CheckoutCheckout
-              </h2>
-              <p className="text-gray-400 mt-2">효율적인 공부 시간 관리</p>
-              
-              <div className="flex space-x-4 mt-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  이용약관
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  개인정보처리방침
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  문의하기
-                </a>
-              </div>
+      <footer className="py-8 text-sm text-gray-500">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between">
+            <div>
+              <p>Copyright © 2025, 째깍째깍. All rights reserved.</p>
+              <p className="mt-2">github @95hyun</p>
             </div>
-            
-            <div className="text-center md:text-right">
-              <p className="text-gray-400">
-                &copy; 2025 CheckoutCheckout. All rights reserved.
-              </p>
-              <p className="text-gray-500 text-sm mt-2">
-                Made with 💖 in 🇰🇷
-              </p>
+            <div className="mt-4 md:mt-0">
+              <p>개인정보처리방침</p>
+              <p className="mt-2">이용약관</p>
             </div>
           </div>
         </div>
       </footer>
-      
-      {/* CSS 스타일 */}
-      <style jsx="true">{`
-        @keyframes float {
-          0% { transform: translateY(0px) rotate(3deg); }
-          50% { transform: translateY(-10px) rotate(5deg); }
-          100% { transform: translateY(0px) rotate(3deg); }
-        }
-        
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };

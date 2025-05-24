@@ -3,15 +3,18 @@ export interface User {
   id: number;
   email: string;
   nickname: string;
-  profileImage?: string;
-  characterType?: string; // character -> characterType으로 변경
+  characterType?: string; // 캐릭터 타입을 프로필 이미지로 사용
 }
+
+// 희귀도 타입 정의
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
 // 캐릭터 관련 타입
 export interface Character {
   id: number;
   type: string;
   acquiredDate: string;
+  rarity?: Rarity; // 희귀도 필드 추가 (선택적 필드로 이전 데이터와 호환성 유지)
 }
 
 // 인증 관련 타입
@@ -58,7 +61,36 @@ export interface DailyStudyTime {
 }
 
 export interface StudyTimeHistory {
-  records: DailyStudyTime[];
+  records: {
+    date: string;
+    duration: number;
+  }[];
+}
+
+// 공부 계획 관련 타입
+export interface StudyPlan {
+  id?: number;
+  date: string;
+  content: string;
+  plannedDuration: number; // 초 단위로 계획한 시간
+  isCompleted?: boolean;
+}
+
+export interface StudyPlanItem {
+  id: number;
+  content: string;
+  plannedDuration: number; // 초 단위로 계획한 시간
+  isCompleted: boolean;
+}
+
+export interface StudyPlansByDate {
+  date: string;
+  items: StudyPlanItem[];
+}
+
+export interface StudyPlanRequest {
+  content: string;
+  plannedDuration: number; // 초 단위로 계획한 시간
 }
 
 // 랭킹 관련 타입
@@ -99,7 +131,7 @@ export interface StudyMember {
   id: number;
   userId: number;
   nickname: string;
-  profileImage?: string;
+  characterType?: string;
   isAdmin: boolean;
   isOwner: boolean;
   joinedAt: string;

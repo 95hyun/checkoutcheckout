@@ -1,6 +1,6 @@
 package com.toy.checkoutcheckout.config;
 
-import com.toy.checkoutcheckout.global.security.JwtAuthenticationFilter;
+import com.toy.checkoutcheckout.domain.user.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,15 +29,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors().and()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔 사용을 위한 설정
+            .authorizeHttpRequests(authorize -> authorize
+                // 인증 없이 접근 가능한 URL
+                .requestMatchers("/api/auth/login", "/api/auth/signup").permitAll()
+                // 프로필 관련 URL은 인증 필요
+                .requestMatchers("/api/auth/profile/**").authenticated()
+                .requestMatchers("/api/auth/me").authenticated()
+                // 기타 인증 없이 접근 가능한 URL
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll() // 업로드된 이미지 접근 허용
+                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
-            .and()
+            )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
             
         return http.build();

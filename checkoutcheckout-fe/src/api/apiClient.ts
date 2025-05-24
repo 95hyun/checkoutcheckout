@@ -15,6 +15,9 @@ apiClient.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log(`API Request to ${config.url} - Token exists`);
+    } else {
+      console.warn(`API Request to ${config.url} - No token available`);
     }
     return config;
   },
@@ -23,13 +26,14 @@ apiClient.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터 - 401 에러 시 로그인 페이지로 이동
+// 응답 인터셉터 - 401/403 에러 시 로그인 페이지로 이동
 apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      console.error(`Authentication error (${error.response.status}) for ${error.config.url}`, error);
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

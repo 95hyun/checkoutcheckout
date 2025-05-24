@@ -1,21 +1,33 @@
 /**
  * 이 파일은 public 폴더의 캐릭터 이미지를 가져오는 CSS 스타일을 정의합니다.
  * 캐릭터 이미지는 /characters/ 경로에 있어야 합니다.
- * 현재 사용 중인 이미지들:
- * - checkout_char_1_girl_healer.png (클레릭)
- * - checkout_char_2_girl_knight.png (기사)
- * - checkout_char_3_man_axe.png (드워프)
- * - checkout_char_4_girl_devil.png (여성 악마)
- * - checkout_char_5_man_devil.png (남성 악마)
- * - checkout_char_6_girl_magi.png (마법사)
- * - checkout_char_7_man_sheild.png (방패병)
- * - checkout_char_8_man_captin.png (캡틴)
- * - checkout_char_9_girl_archer.png (궁수)
- * - checkout_char_10_man_assasin.png (암살자)
+ * 
+ * 새로운 캐릭터 시스템:
+ * - checkout_common_rabbit.png (일반 토끼)
+ * - checkout_common_squirrel.png (일반 다람쥐)
+ * - checkout_common_hedgehog.png (일반 고슴도치)
+ * - checkout_common_pigeon.png (일반 비둘기)
+ * - checkout_uncommon_cat.png (고급 고양이)
+ * - checkout_uncommon_dog.png (고급 강아지)
+ * - checkout_uncommon_bear.png (고급 곰)
+ * - checkout_uncommon_hamster.png (고급 햄스터)
+ * - checkout_rare_wolf.png (희귀 늑대)
+ * - checkout_rare_fox.png (희귀 여우)
+ * - checkout_rare_lion.png (희귀 사자)
+ * - checkout_rare_penguin.png (희귀 펭귄)
+ * - checkout_epic_unicorn.png (영웅 유니콘)
+ * - checkout_epic_dragon.png (영웅 드래곤)
+ * - checkout_epic_phoneix.png (영웅 불사조)
+ * - checkout_epic_whitetiger.png (영웅 백호)
+ * - checkout_legendary_doge.png (전설 도지)
+ * - checkout_legendary_pepe.png (전설 페페)
+ * - checkout_legendary_chillguy.png (전설 칠가이)
+ * - checkout_legendary_tralellotralala.png (전설 트랄랄라)
  */
 
 /* 참고: 이 파일은 assets/character-styles.css와 중복될 수 있습니다. 
-   public 폴더의 경로와 이미지 이름은 character-styles.css로 통일합니다.
-   이 파일은 더 이상 사용하지 않으며, 
+   캐릭터 타입 변경으로 인해 이 파일은 더 이상 필요하지 않습니다.
    모든 캐릭터 스타일 정의는 character-styles.css로 이동하였습니다.
 */
+
+/* 주의: 이 파일의 스타일은 사용하지 않으며 assets/character-styles.css를 참조해야 합니다. */

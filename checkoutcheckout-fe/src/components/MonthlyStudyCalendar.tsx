@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { format, addDays, getDaysInMonth, startOfMonth, endOfMonth, isSameDay } from 'date-fns';
+import { format, addDays, getDaysInMonth, startOfMonth, endOfMonth, isSameDay, isBefore } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { DailyStudyTime } from '../types';
+import { DailyStudyTime, StudyPlansByDate } from '../types';
 import { getIntensityColor, formatSecondsToReadable } from '../utils/timeUtils';
 
 interface MonthlyStudyCalendarProps {
   studyData: DailyStudyTime[];
+  plans?: StudyPlansByDate[];
   currentMonth: Date;
   onMonthChange: (date: Date) => void;
+  onDayClick?: (date: Date) => void;
 }
 
 const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({ 
   studyData, 
+  plans = [],
   currentMonth,
-  onMonthChange
+  onMonthChange,
+  onDayClick
 }) => {
-  const [calendarData, setCalendarData] = useState<Array<{ date: Date; duration: number }>>([]);
-  const [hoveredDay, setHoveredDay] = useState<{ date: Date; duration: number } | null>(null);
+  const [calendarData, setCalendarData] = useState<Array<{ 
+    date: Date; 
+    duration: number; 
+    hasPlan: boolean; 
+    planCount: number;
+    isCompleted?: boolean 
+  }>>([]);
+  
+  const [hoveredDay, setHoveredDay] = useState<{ 
+    date: Date; 
+    duration: number; 
+    hasPlan: boolean; 
+    planCount: number;
+    isCompleted?: boolean 
+  } | null>(null);
 
   useEffect(() => {
     // 현재 월의 시작일과 마지막 일
@@ -36,14 +53,31 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
         return isSameDay(dataDate, date);
       });
       
+      // 해당 날짜의 계획 찾기
+      const dateString = format(date, 'yyyy-MM-dd');
+      const planInfo = plans.find(plan => plan.date === dateString);
+      
+      // 계획이 있는지 확인 (items 배열이 있고 비어있지 않은지)
+      const hasPlan = !!planInfo && planInfo.items && planInfo.items.length > 0;
+      
+      // 계획 항목 수 계산 (안전하게 처리)
+      const planCount = planInfo && planInfo.items ? planInfo.items.length : 0;
+      
+      // 완료된 계획 항목이 있는지 확인 (안전하게 처리)
+      const hasCompletedItem = planInfo && planInfo.items ? 
+        planInfo.items.some(item => item.isCompleted) : false;
+      
       monthData.push({
         date,
-        duration: studyInfo ? studyInfo.duration : 0
+        duration: studyInfo ? studyInfo.duration : 0,
+        hasPlan,
+        planCount,
+        isCompleted: hasCompletedItem
       });
     }
     
     setCalendarData(monthData);
-  }, [studyData, currentMonth]);
+  }, [studyData, plans, currentMonth]);
 
   // 이전 달로 이동
   const goToPreviousMonth = () => {
@@ -68,6 +102,23 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
     currentMonth.getFullYear() > today.getFullYear() || 
     (currentMonth.getFullYear() === today.getFullYear() && currentMonth.getMonth() > today.getMonth())
   );
+
+  // 날짜 클릭 핸들러
+  const handleDayClick = (date: Date) => {
+    // 오늘이나 미래 날짜만 클릭 가능
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간 부분 제거
+    
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0); // 시간 부분 제거
+    
+    const isToday = compareDate.getTime() === today.getTime();
+    const isFuture = compareDate > today;
+    
+    if (onDayClick && (isToday || isFuture)) {
+      onDayClick(date);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -117,15 +168,31 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
           {/* 날짜 셀 */}
           {calendarData.map((day, i) => {
             const isToday = isSameDay(day.date, today);
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+            
+            const dayDate = new Date(day.date);
+            dayDate.setHours(0, 0, 0, 0);
+            
+            const isFutureDate = dayDate > todayDate;
+            const isPastDate = dayDate < todayDate;
+            const isClickable = isToday || isFutureDate;
             
             return (
               <div 
                 key={i}
                 className={`h-14 rounded-md border flex flex-col items-center justify-center relative transition-all ${
                   isToday ? 'border-blue-500' : 'border-gray-200'
-                } hover:border-blue-300`}
+                } ${
+                  isClickable ? 'hover:border-blue-300 cursor-pointer' : 'cursor-default'
+                } ${
+                  day.hasPlan ? 'border-green-500 border-2' : ''
+                } ${
+                  day.isCompleted ? 'bg-green-50' : ''
+                }`}
                 onMouseEnter={() => setHoveredDay(day)}
                 onMouseLeave={() => setHoveredDay(null)}
+                onClick={() => handleDayClick(day.date)}
               >
                 <div className={`absolute top-1 left-1 text-xs ${isToday ? 'font-bold' : ''}`}>
                   {format(day.date, 'd')}
@@ -134,6 +201,12 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
                   className="h-8 w-8 mt-2 rounded-sm"
                   style={{ backgroundColor: getIntensityColor(day.duration) }}
                 ></div>
+                {/* 계획 숫자 표시 */}
+                {day.planCount > 0 && (
+                  <div className="absolute bottom-1 right-1 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                    {day.planCount}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -160,6 +233,11 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
                 ? formatSecondsToReadable(hoveredDay.duration) 
                 : '공부 기록 없음'}
             </div>
+            {hoveredDay.hasPlan && (
+              <div className="text-green-300 mt-1">
+                계획 {hoveredDay.planCount}개 {hoveredDay.isCompleted && '✓'}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -175,6 +253,10 @@ const MonthlyStudyCalendar: React.FC<MonthlyStudyCalendarProps> = ({
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: '#0e4429' }}></div>
         </div>
         <span className="ml-2">많음</span>
+        <span className="ml-4 flex items-center">
+          <div className="h-3 w-3 border-2 border-green-500 mr-1"></div>
+          계획 있음
+        </span>
       </div>
     </div>
   );

@@ -8,6 +8,48 @@ import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
 import StudyMemberRankingList from '../components/StudyMemberRankingList';
 import Navbar from '../components/Navbar';
+import { Rarity } from '../types';
+
+// 캐릭터 희귀도 매핑 (기본값 설정 - 관리 용이성을 위해 대문자 기준)
+const characterRarityMap: Record<string, Rarity> = {
+  'CLERIC': 'common',
+  'KNIGHT': 'uncommon',
+  'DWARF': 'rare',
+  'DEMON_FEMALE': 'epic',
+  'DEMON_MALE': 'legendary',
+  'WIZARD': 'rare',
+  'SHIELD': 'uncommon',
+  'CAPTAIN': 'epic',
+  'ARCHER': 'common',
+  'ASSASSIN': 'legendary'
+};
+
+// 캐릭터 타입 문자열에서 희귀도 가져오기 (대소문자 및 형식 정규화)
+const getRarityForCharacter = (characterType: string): Rarity => {
+  // 타입이 없으면 common 반환
+  if (!characterType) return 'common';
+  
+  // 카멜케이스(demonFemale) -> DEMON_FEMALE 처리
+  if (/^[a-z]+[A-Z]/.test(characterType)) {
+    // 카멜 케이스 -> 스네이크 케이스
+    const snakeCase = characterType.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+    return characterRarityMap[snakeCase] || 'common';
+  }
+  
+  // 소문자(demonfemale)인 경우 "DEMONFEMALE" 변환
+  if (/^[a-z]+$/.test(characterType)) {
+    const upperCase = characterType.toUpperCase();
+    
+    // "DEMONFEMALE" -> "DEMON_FEMALE" 등의 특수 케이스 처리
+    if (upperCase === "DEMONFEMALE") return characterRarityMap["DEMON_FEMALE"] || 'common';
+    if (upperCase === "DEMONMALE") return characterRarityMap["DEMON_MALE"] || 'common';
+    
+    return characterRarityMap[upperCase] || 'common';
+  }
+  
+  // 이미 SNAKE_CASE이거나 다른 형식인 경우 그대로 검색
+  return characterRarityMap[characterType.toUpperCase()] || 'common';
+};
 
 enum RankingType {
   DAILY = 'daily',
@@ -295,11 +337,20 @@ const StudyDetailPage: React.FC = () => {
                 <tr key={member.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        {member.profileImage ? (
-                          <img src={member.profileImage} alt={member.nickname} className="h-10 w-10 rounded-full" />
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden relative">
+                        {member.characterType ? (
+                          <div className={`h-full w-full character-${member.characterType} character-image rounded-full profile-rarity-${getRarityForCharacter(member.characterType)}`}>
+                            {/* 희귀도별 효과 */}
+                            {(() => {
+                              const rarity = getRarityForCharacter(member.characterType);
+                              if (rarity === 'legendary') return <div className="profile-legendary-effect"></div>;
+                              if (rarity === 'epic') return <div className="profile-epic-effect"></div>;
+                              if (rarity === 'rare') return <div className="profile-rare-effect"></div>;
+                              return null;
+                            })()}
+                          </div>
                         ) : (
-                          <span className="text-gray-500">{member.nickname.charAt(0)}</span>
+                          <span className="text-gray-500 flex items-center justify-center h-full w-full bg-gray-200">{member.nickname.charAt(0)}</span>
                         )}
                       </div>
                       <div className="ml-4">

@@ -32,5 +32,6 @@ public class StudyMemberRankingResponse {
         private String nickname;
         private Long studyTime; // 초 단위
         private String formattedStudyTime; // "00:00:00" 형식
+        private String characterType; // 사용자 캐릭터 타입 추가
     }
 }

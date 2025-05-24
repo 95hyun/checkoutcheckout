@@ -1,53 +1,144 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTimer } from '../hooks/useTimer';
-import { FaPlay, FaStop, FaGift } from 'react-icons/fa';
+import { FaPlay, FaStop, FaGift, FaClock, FaCalendarAlt, FaCheckCircle, FaTasks, FaCheck, FaHourglassEnd } from 'react-icons/fa';
 import Loading from './Loading';
 import ErrorMessage from './ErrorMessage';
 import useCharacterStore from '../store/characterStore';
+import useTimerStore from '../store/timerStore';
+import usePlanStore from '../store/planStore';
 import { useNavigate } from 'react-router-dom';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
+import { formatSecondsToReadable } from '../utils/timeUtils';
+import { StudyPlanItem, Rarity } from '../types';
 
-// 캐릭터 이미지 가져오기
+// 동물 캐릭터 타입 목록
 const characterTypes = [
-  'cleric',      // 성직자
-  'knight',      // 기사
-  'dwarf',       // 드워프
-  'demonFemale', // 여성 악마
-  'demonMale',   // 남성 악마
-  'wizard',      // 마법사
-  'shield',      // 방패병
-  'captain',     // 캡틴
-  'archer',      // 궁수
-  'assassin'     // 암살자
+  'common_rabbit',
+  'common_squirrel',
+  'common_hedgehog',
+  'common_pigeon',
+  'uncommon_cat',
+  'uncommon_dog',
+  'uncommon_bear',
+  'uncommon_hamster',
+  'rare_wolf',
+  'rare_fox',
+  'rare_lion',
+  'rare_penguin',
+  'epic_unicorn',
+  'epic_dragon',
+  'epic_phoneix',
+  'epic_whitetiger',
+  'legendary_doge',
+  'legendary_pepe',
+  'legendary_tralellotralala',
+  'legendary_chillguy'
 ];
 
+// 희귀도별 확률 설정 (총합 100%)
+const rarityProbabilities: Record<Rarity, number> = {
+  'common': 50,     // 50% 확률
+  'uncommon': 30,   // 30% 확률
+  'rare': 15,       // 15% 확률
+  'epic': 4,        // 4% 확률
+  'legendary': 1    // 1% 확률
+};
+
+// 희귀도별 기본 캐릭터 매핑
+const defaultCharactersByRarity: Record<Rarity, string[]> = {
+  'common': ['common_rabbit', 'common_squirrel', 'common_hedgehog', 'common_pigeon'],
+  'uncommon': ['uncommon_cat', 'uncommon_dog', 'uncommon_bear', 'uncommon_hamster'],
+  'rare': ['rare_wolf', 'rare_fox', 'rare_lion', 'rare_penguin'],
+  'epic': ['epic_unicorn', 'epic_dragon', 'epic_phoneix', 'epic_whitetiger'],
+  'legendary': ['legendary_doge', 'legendary_pepe', 'legendary_tralellotralala', 'legendary_chillguy']
+};
+
+// 랜덤 희귀도 선택 함수
+const getRandomRarity = (): Rarity => {
+  const rand = Math.random() * 100; // 0-100 사이의 랜덤 값
+  let cumulativeProbability = 0;
+
+  for (const rarity of Object.keys(rarityProbabilities) as Rarity[]) {
+    cumulativeProbability += rarityProbabilities[rarity];
+    if (rand <= cumulativeProbability) {
+      return rarity;
+    }
+  }
+
+  return 'common'; // 기본값 (확률 합계가 100%면 여기까지 오지 않음)
+};
+
+// 특정 희귀도에 해당하는 캐릭터 중 랜덤 선택
+const getRandomCharacterByRarity = (rarity: Rarity): string => {
+  const charactersOfRarity = defaultCharactersByRarity[rarity];
+  const randomIndex = Math.floor(Math.random() * charactersOfRarity.length);
+  return charactersOfRarity[randomIndex];
+};
+
 // 캐릭터 획득을 위한 최소 공부 시간 (10초) -> 6시간
-const MIN_STUDY_TIME_FOR_CHARACTER = 21600; // 초 단위
+const MIN_STUDY_TIME_FOR_CHARACTER = 10; // 초 단위 (6시간은 21600)
+
+// 시간 형식 변환 (초 -> 00:00:00)
+const formatTimeDisplay = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return [
+    hours.toString().padStart(2, '0'),
+    minutes.toString().padStart(2, '0'),
+    remainingSeconds.toString().padStart(2, '0')
+  ].join(':');
+};
 
 const Timer: React.FC = () => {
-  const { 
-    isActive = false, 
+  const {
+    isActive = false,
     elapsedTime = 0,
-    formattedTime = '00:00:00', 
-    startTimer, 
-    stopTimer, 
-    isLoading = false, 
-    error, 
-    resetError 
+    formattedTime = '00:00:00',
+    startTimer,
+    stopTimer,
+    isLoading = false,
+    error,
+    resetError
   } = useTimer();
-  
+
   const navigate = useNavigate();
   const [showCharacterAlert, setShowCharacterAlert] = useState<boolean>(false);
   const [acquiredCharacter, setAcquiredCharacter] = useState<string | null>(null);
   const characterTimeoutRef = useRef<number | null>(null);
-  
-  const { 
-    acquireCharacter, 
-    hasReceivedTodayCharacter, 
-    checkTodayCharacter, 
+
+  // 오늘 및 이번주 공부 시간 상태
+  const [todayStudyTime, setTodayStudyTime] = useState<number>(0);
+  const [weeklyStudyTime, setWeeklyStudyTime] = useState<number>(0);
+
+  // 타이머에 선택된 계획 관련 상태
+  const [selectedPlan, setSelectedPlan] = useState<StudyPlanItem | null>(null);
+  const [showTargetReachedPopup, setShowTargetReachedPopup] = useState<boolean>(false);
+
+  const {
+    acquireCharacter,
+    hasReceivedTodayCharacter,
+    checkTodayCharacter,
     loading: characterLoading,
     error: characterError
   } = useCharacterStore();
-  
+
+  const {
+    fetchStudyHistory,
+    studyHistory,
+    recentSessions
+  } = useTimerStore();
+
+  // 계획 관련 스토어
+  const {
+    getPlansByDate,
+    currentDatePlans,
+    completePlanItem,
+    isLoading: isPlanLoading,
+    error: planError
+  } = usePlanStore();
+
   // 페이지 로드 시 오늘 캐릭터를 이미 획득했는지 확인
   useEffect(() => {
     // 캐릭터 획득 여부를 확인하고 상태를 업데이트
@@ -57,60 +148,130 @@ const Timer: React.FC = () => {
       const hasCharacter = await checkTodayCharacter();
       console.log("캐릭터 획득 여부:", hasCharacter);
     };
-    
+
     checkCharacterStatus();
   }, [checkTodayCharacter]);
-  
+
+  // 페이지 로드 시 공부 기록 및 오늘의 계획 불러오기
+  useEffect(() => {
+    const loadData = async () => {
+      // 상태를 업데이트하기 위한 공부 기록 불러오기
+      const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+      // 이번주 날짜 범위 설정 (월요일 ~ 일요일)
+      const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+
+      // 공부 기록 불러오기
+      await fetchStudyHistory(todayStart, weekEnd);
+
+      // 오늘의 계획 불러오기
+      await getPlansByDate(today);
+    };
+
+    loadData();
+  }, [fetchStudyHistory, getPlansByDate]);
+
+  // 공부 기록이 로드되면 오늘 및 이번주 공부 시간 계산
+  useEffect(() => {
+    if (studyHistory && studyHistory.records) {
+      const today = format(new Date(), 'yyyy-MM-dd');
+
+      // 오늘 공부 시간 계산
+      const todayRecord = studyHistory.records.find(record => record.date === today);
+      setTodayStudyTime(todayRecord ? todayRecord.duration : 0);
+
+      // 이번주 공부 시간 계산
+      const totalWeeklyTime = studyHistory.records.reduce((total, record) => total + record.duration, 0);
+      setWeeklyStudyTime(totalWeeklyTime);
+    }
+  }, [studyHistory]);
+
+  // 타이머 상태가 변경되면 공부 시간 기록 업데이트
+  useEffect(() => {
+    if (!isActive) {
+      // 타이머가 멈추면 갱신
+      const updateStudyTimes = async () => {
+        // 오늘 날짜 범위 설정
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+        // 이번주 날짜 범위 설정 (월요일 ~ 일요일)
+        const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+        const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+
+        // 공부 기록 불러오기
+        await fetchStudyHistory(todayStart, weekEnd);
+      };
+
+      updateStudyTimes();
+    }
+  }, [isActive, fetchStudyHistory]);
+
+  // 타이머가 실행 중이고 계획이 선택된 경우 목표 시간 체크
+  useEffect(() => {
+    if (isActive && selectedPlan && elapsedTime >= selectedPlan.plannedDuration && !selectedPlan.isCompleted) {
+      setShowTargetReachedPopup(true);
+    }
+  }, [isActive, selectedPlan, elapsedTime]);
+
   // 공부 시간이 10초를 넘으면 캐릭터 획득 체크
   useEffect(() => {
     console.log("타이머 체크:", { isActive, hasReceivedTodayCharacter, elapsedTime });
-    
+
     // 이미 캐릭터를 받았거나, 타이머가 실행 중이 아니거나, 10초가 안 되었으면 처리하지 않음
     if (!isActive || elapsedTime < MIN_STUDY_TIME_FOR_CHARACTER) {
       return;
     }
-    
+
     if (hasReceivedTodayCharacter) {
       console.log("이미 오늘 캐릭터를 획득했습니다.");
       return;
     }
-    
+
     // 이미 타임아웃이 설정되어 있으면 처리하지 않음
     if (characterTimeoutRef.current) {
       return;
     }
-    
+
     console.log("10초 경과! 캐릭터 획득 조건 충족");
-    
+
     // 캐릭터 획득 처리
     characterTimeoutRef.current = window.setTimeout(() => {
       try {
-        // 랜덤 캐릭터 선택
-        const randomIndex = Math.floor(Math.random() * characterTypes.length);
-        const characterType = characterTypes[randomIndex];
-        console.log("선택된 캐릭터 타입:", characterType);
-        
+        // 희귀도 결정
+        const randomRarity = getRandomRarity();
+
+        // 해당 희귀도의 캐릭터 중 랜덤 선택
+        const characterType = getRandomCharacterByRarity(randomRarity);
+        console.log(`선택된 캐릭터 타입: ${characterType}, 희귀도: ${randomRarity}`);
+        console.log(`캐릭터 목록 확인 - ${randomRarity}:`, defaultCharactersByRarity[randomRarity]);
+
         setAcquiredCharacter(characterType);
         setShowCharacterAlert(true);
-        
-        // 백엔드 API 호출
-        acquireCharacter(characterType)
-          .then((character) => {
-            console.log('캐릭터 획득 성공:', character);
-            // 캐릭터 획득 알림 표시
-          })
-          .catch(err => {
-            console.error('캐릭터 획득 실패:', err);
-          })
-          .finally(() => {
-            characterTimeoutRef.current = null;
-          });
+
+        // 백엔드 API 호출 (희귀도 추가)
+        acquireCharacter(characterType, randomRarity)
+            .then((character) => {
+              console.log('캐릭터 획득 성공:', character);
+              console.log('이미지 경로:', `/characters/checkout_${characterType}.png`);
+              // 캐릭터 획득 알림 표시
+            })
+            .catch(err => {
+              console.error('캐릭터 획득 실패:', err);
+            })
+            .finally(() => {
+              characterTimeoutRef.current = null;
+            });
       } catch (error) {
         console.error("캐릭터 획득 중 오류 발생:", error);
         characterTimeoutRef.current = null;
       }
     }, 500); // 약간의 지연 추가
-    
+
     return () => {
       if (characterTimeoutRef.current) {
         clearTimeout(characterTimeoutRef.current);
@@ -118,114 +279,406 @@ const Timer: React.FC = () => {
       }
     };
   }, [isActive, elapsedTime, hasReceivedTodayCharacter, acquireCharacter]);
-  
+
   // 에러 메시지를 5초 후에 자동으로 지우기
   useEffect(() => {
-    if ((error || characterError) && resetError) {
+    if ((error || characterError || planError) && resetError) {
       const timer = setTimeout(() => {
         resetError();
       }, 5000);
-      
+
       return () => clearTimeout(timer);
     }
-  }, [error, characterError, resetError]);
-  
+  }, [error, characterError, planError, resetError]);
+
   const handleStartTimer = async () => {
     if (!isActive && !isLoading && startTimer) {
       await startTimer();
     }
   };
-  
+
   const handleStopTimer = async () => {
     if (isActive && !isLoading && stopTimer) {
       await stopTimer();
+      // 타이머가 중지되면 선택한 계획 초기화
+      if (showTargetReachedPopup) {
+        setShowTargetReachedPopup(false);
+      }
     }
   };
-  
+
   const handleCharacterClose = () => {
     setShowCharacterAlert(false);
   };
-  
+
   const navigateToDashboard = () => {
     setShowCharacterAlert(false);
     navigate('/dashboard');
   };
-  
+
+  // 계획 항목 완료 처리
+  const handleCompletePlan = async (itemId: number) => {
+    try {
+      await completePlanItem(new Date(), itemId);
+      // 완료한 계획이 현재 선택된 계획이었다면 상태 업데이트
+      if (selectedPlan && selectedPlan.id === itemId) {
+        setSelectedPlan({
+          ...selectedPlan,
+          isCompleted: true
+        });
+      }
+    } catch (error) {
+      console.error('계획 완료 처리 실패:', error);
+    }
+  };
+
+  // 오늘 계획 수립으로 이동
+  const navigateToPlanPage = () => {
+    navigate('/history');
+  };
+
+  // 목표 시간 달성 후 계속 공부하기
+  const handleContinueTimer = async () => {
+    if (selectedPlan) {
+      // 선택된 계획 완료 처리
+      await handleCompletePlan(selectedPlan.id);
+    }
+    // 팝업 닫기
+    setShowTargetReachedPopup(false);
+  };
+
+  // 목표 시간 달성 후 타이머 종료하기
+  const handleStopAfterTarget = async () => {
+    if (selectedPlan) {
+      // 선택된 계획 완료 처리
+      await handleCompletePlan(selectedPlan.id);
+    }
+    // 팝업 닫기 및 타이머 종료
+    setShowTargetReachedPopup(false);
+    await handleStopTimer();
+  };
+
+  // 오늘 날짜 계획 유무 확인
+  const hasTodayPlans = currentDatePlans && currentDatePlans.items && currentDatePlans.items.length > 0;
+
+  // 오늘 계획 중 완료되지 않은 항목 필터링
+  const uncompletedPlans = hasTodayPlans
+      ? currentDatePlans.items.filter(item => !item.isCompleted)
+      : [];
+
+  // 오늘 계획 중 완료된 항목 필터링
+  const completedPlans = hasTodayPlans
+      ? currentDatePlans.items.filter(item => item.isCompleted)
+      : [];
+
   return (
-    <div className="card flex flex-col items-center p-8 shadow-lg rounded-lg bg-white">
-      <h2 className="text-2xl font-bold mb-6">공부 타이머</h2>
-      
-      {(error || characterError) && <ErrorMessage message={error || characterError || ''} className="mb-4" />}
-      
-      <div className="text-6xl font-mono mb-8 select-none font-bold">
-        {formattedTime}
-      </div>
-      
-      <div className="flex space-x-4">
-        {(isLoading || characterLoading) ? (
-          <div className="flex items-center justify-center w-32 h-12">
-            <Loading size="md" />
-          </div>
-        ) : !isActive ? (
-          <button
-            onClick={handleStartTimer}
-            disabled={isLoading || characterLoading}
-            className="btn-primary flex items-center px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50"
-            aria-label="타이머 시작"
-          >
-            <FaPlay className="mr-2" /> 시작하기
-          </button>
-        ) : (
-          <button
-            onClick={handleStopTimer}
-            disabled={isLoading || characterLoading}
-            className="btn bg-error text-white hover:bg-red-600 flex items-center px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50"
-            aria-label="타이머 중지"
-          >
-            <FaStop className="mr-2" /> 종료하기
-          </button>
-        )}
-      </div>
-      
-      {isActive && (
-        <div className="mt-4 text-green-600 font-medium text-center">
-          <p>타이머가 실행 중입니다</p>
-          <p className="text-sm text-gray-600 mt-1">브라우저를 닫아도 계속 기록됩니다</p>
+      <div className="flex flex-col items-center p-8 shadow-lg rounded-lg bg-white w-full">
+        <div className="text-6xl font-mono mb-8 select-none font-bold">
+          {formattedTime}
         </div>
-      )}
-      
-      {/* 캐릭터 획득 알림 */}
-      {showCharacterAlert && acquiredCharacter && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex flex-col items-center">
-              <FaGift className="text-5xl text-yellow-500 mb-4" />
-              <h3 className="text-2xl font-bold mb-2">캐릭터 획득!</h3>
-              <p className="text-center mb-4">
-                축하합니다! 공부를 열심히 하여 새로운 캐릭터를 획득했습니다!
-              </p>
-              <p className="text-primary font-semibold mb-4">
-                캐릭터는 대시보드에서 확인할 수 있습니다.
-              </p>
-              <div className="flex space-x-4">
-                <button 
-                  onClick={handleCharacterClose}
-                  className="btn-outline px-4 py-2"
+
+        {/* 타이머 시작 전 계획 선택 영역 (타이머가 활성화되지 않았을 때만 표시) */}
+        {!isActive && (
+            <div className="w-full mb-6">
+              <h3 className="text-lg font-semibold mb-3">오늘의 공부 계획 선택</h3>
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {/* 계획 없음 옵션 */}
+                <div
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors
+                ${selectedPlan === null
+                        ? 'bg-primary bg-opacity-10 border-primary text-primary'
+                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}
+                    onClick={() => setSelectedPlan(null)}
                 >
-                  계속 공부하기
-                </button>
-                <button 
-                  onClick={navigateToDashboard}
-                  className="btn-primary px-4 py-2"
-                >
-                  대시보드로 이동
-                </button>
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">계획 없음</div>
+                    {selectedPlan === null && <FaCheck className="text-primary" />}
+                  </div>
+                </div>
+
+                {/* 미완료 계획 목록 */}
+                {uncompletedPlans.length > 0 ? (
+                    uncompletedPlans.map(plan => (
+                        <div
+                            key={plan.id}
+                            className={`p-3 border rounded-lg cursor-pointer transition-colors
+                    ${selectedPlan?.id === plan.id
+                                ? 'bg-primary bg-opacity-10 border-primary text-primary'
+                                : 'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}
+                            onClick={() => setSelectedPlan(plan)}
+                        >
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <div className="font-medium">{plan.content}</div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                목표 시간: {formatSecondsToReadable(plan.plannedDuration)}
+                              </div>
+                            </div>
+                            {selectedPlan?.id === plan.id && <FaCheck className="text-primary" />}
+                          </div>
+                        </div>
+                    ))
+                ) : hasTodayPlans ? (
+                    <div className="text-center p-3 bg-gray-50 rounded-lg text-gray-500">
+                      모든 계획을 완료했습니다!
+                    </div>
+                ) : (
+                    <div className="text-center p-3 bg-gray-50 rounded-lg text-gray-500">
+                      오늘 계획이 없습니다.
+                      <button
+                          onClick={navigateToPlanPage}
+                          className="ml-1 text-primary hover:underline"
+                      >
+                        계획 추가하기
+                      </button>
+                    </div>
+                )}
               </div>
+            </div>
+        )}
+
+        <div className="flex space-x-4">
+          {(isLoading || characterLoading) ? (
+              <div className="flex items-center justify-center w-32 h-12">
+                <Loading size="md" />
+              </div>
+          ) : !isActive ? (
+              <button
+                  onClick={handleStartTimer}
+                  disabled={isLoading || characterLoading}
+                  className="btn-primary flex items-center px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50"
+                  aria-label="타이머 시작"
+              >
+                <FaPlay className="mr-2" /> 시작하기
+              </button>
+          ) : (
+              <button
+                  onClick={handleStopTimer}
+                  disabled={isLoading || characterLoading}
+                  className="btn bg-error text-white hover:bg-red-600 flex items-center px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50"
+                  aria-label="타이머 중지"
+              >
+                <FaStop className="mr-2" /> 종료하기
+              </button>
+          )}
+        </div>
+
+        {isActive && (
+            <div className="mt-4 text-green-600 font-medium text-center">
+              <p>타이머가 실행 중입니다</p>
+              {selectedPlan && (
+                  <p className="text-sm mt-1 flex items-center justify-center">
+                    <span className="font-medium">{selectedPlan.content}</span>
+                    <span className="mx-2">•</span>
+                    <span>목표: {formatSecondsToReadable(selectedPlan.plannedDuration)}</span>
+                  </p>
+              )}
+              <p className="text-sm text-gray-600 mt-1">브라우저를 닫아도 계속 기록됩니다</p>
+            </div>
+        )}
+
+        {/* 오늘 및 이번주 누적 공부 시간 */}
+        <div className="w-full mt-6 border-t pt-6">
+          <h3 className="text-xl font-bold mb-4">누적 공부 시간</h3>
+          <div className="flex flex-col space-y-3">
+            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center">
+                <FaClock className="mr-2 text-blue-500" />
+                <span className="text-gray-700 font-medium">오늘 공부 시간</span>
+              </div>
+              <span className="font-mono font-bold text-blue-700">{formatTimeDisplay(todayStudyTime)}</span>
+            </div>
+
+            <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-lg">
+              <div className="flex items-center">
+                <FaCalendarAlt className="mr-2 text-indigo-500" />
+                <span className="text-gray-700 font-medium">이번주 공부 시간</span>
+              </div>
+              <span className="font-mono font-bold text-indigo-700">{formatTimeDisplay(weeklyStudyTime)}</span>
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* 오늘의 공부 계획 섹션 */}
+        <div className="w-full mt-6 border-t pt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold flex items-center">
+              <FaTasks className="mr-2 text-green-600" /> 오늘의 공부 계획
+            </h3>
+            <button
+                onClick={navigateToPlanPage}
+                className="text-primary text-sm hover:underline flex items-center"
+            >
+              {hasTodayPlans ? '계획 수정하기' : '계획 추가하기'} →
+            </button>
+          </div>
+
+          {isPlanLoading ? (
+              <div className="flex justify-center py-4">
+                <Loading size="sm" />
+              </div>
+          ) : planError ? (
+              <ErrorMessage message={planError} />
+          ) : !hasTodayPlans ? (
+              <div className="bg-gray-50 p-4 rounded-lg text-center text-gray-500">
+                <p>오늘의 계획이 없습니다.</p>
+                <button
+                    onClick={navigateToPlanPage}
+                    className="mt-2 text-primary hover:underline text-sm"
+                >
+                  계획 페이지에서 추가하기
+                </button>
+              </div>
+          ) : (
+              <div className="space-y-4">
+                {/* 미완료 계획 */}
+                {uncompletedPlans.length > 0 && (
+                    <div className="space-y-2">
+                      {uncompletedPlans.map(plan => (
+                          <div key={plan.id} className="bg-white border border-gray-200 rounded-lg p-3 flex justify-between items-center">
+                            <div className="flex-1">
+                              <p className="font-medium">{plan.content}</p>
+                              <p className="text-xs text-gray-500 mt-1">목표: {formatSecondsToReadable(plan.plannedDuration)}</p>
+                            </div>
+                            <button
+                                onClick={() => handleCompletePlan(plan.id)}
+                                className="ml-2 p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors"
+                                title="완료로 표시"
+                            >
+                              <FaCheck />
+                            </button>
+                          </div>
+                      ))}
+                    </div>
+                )}
+
+                {/* 완료된 계획 */}
+                {completedPlans.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="font-medium text-gray-600 mb-2 flex items-center">
+                        <FaCheckCircle className="mr-1 text-green-500" /> 완료된 항목
+                      </h4>
+                      <div className="space-y-2">
+                        {completedPlans.map(plan => (
+                            <div key={plan.id} className="bg-green-50 border border-green-100 rounded-lg p-3">
+                              <p className="font-medium text-gray-500 line-through">{plan.content}</p>
+                              <p className="text-xs text-gray-400 mt-1">목표: {formatSecondsToReadable(plan.plannedDuration)}</p>
+                            </div>
+                        ))}
+                      </div>
+                    </div>
+                )}
+              </div>
+          )}
+        </div>
+
+        {/* 캐릭터 획득 알림 */}
+        {showCharacterAlert && acquiredCharacter && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                <div className="flex flex-col items-center">
+                  <FaGift className="text-5xl text-yellow-500 mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">캐릭터 획득!</h3>
+
+                  {/* 캐릭터 미리보기 */}
+                  <div className="w-32 h-32 my-3 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                    <div className="w-full h-full">
+                      <img
+                          src={`/characters/checkout_${acquiredCharacter}.png`}
+                          alt={`캐릭터: ${acquiredCharacter}`}
+                          className="w-full h-full object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 희귀도 배지 */}
+                  {(() => {
+                    // 캐릭터 타입에서 희귀도 추출 (common_rabbit -> common)
+                    const rarityFromType = acquiredCharacter.split('_')[0] as Rarity;
+
+                    // 희귀도별 색상
+                    const rarityColors = {
+                      'common': 'bg-gray-500',
+                      'uncommon': 'bg-green-500',
+                      'rare': 'bg-blue-500',
+                      'epic': 'bg-purple-500',
+                      'legendary': 'bg-yellow-500'
+                    };
+
+                    // 희귀도별 이름
+                    const rarityNames = {
+                      'common': '일반',
+                      'uncommon': '고급',
+                      'rare': '희귀',
+                      'epic': '영웅',
+                      'legendary': '전설'
+                    };
+
+                    return (
+                        <div className={`${rarityColors[rarityFromType]} text-white px-4 py-1 rounded-full text-sm font-bold mb-3`}>
+                          {rarityNames[rarityFromType]}
+                        </div>
+                    );
+                  })()}
+
+                  <p className="text-center mb-4">
+                    축하합니다! 공부를 열심히 하여 새로운 캐릭터를 획득했습니다!
+                  </p>
+                  <p className="text-primary font-semibold mb-4">
+                    캐릭터는 프로필 페이지에서 확인할 수 있습니다.
+                  </p>
+                  <div className="flex space-x-4">
+                    <button
+                        onClick={handleCharacterClose}
+                        className="btn-outline px-4 py-2"
+                    >
+                      계속 공부하기
+                    </button>
+                    <button
+                        onClick={navigateToDashboard}
+                        className="btn-primary px-4 py-2"
+                    >
+                      대시보드로 이동
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        )}
+
+        {/* 목표 시간 달성 팝업 */}
+        {showTargetReachedPopup && selectedPlan && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                <div className="flex flex-col items-center">
+                  <FaHourglassEnd className="text-5xl text-green-500 mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">목표 시간 달성!</h3>
+                  <p className="text-center mb-4">
+                    <span className="font-medium">'{selectedPlan.content}'</span> 계획의 목표 시간
+                    <span className="font-medium"> {formatSecondsToReadable(selectedPlan.plannedDuration)}</span>을 달성했습니다!
+                  </p>
+                  <p className="text-gray-600 mb-4">
+                    이 계획을 완료 처리하고 계속 진행하시겠습니까?
+                  </p>
+                  <div className="flex space-x-4">
+                    <button
+                        onClick={handleContinueTimer}
+                        className="bg-primary text-white px-4 py-2 rounded-lg"
+                    >
+                      계속 공부하기
+                    </button>
+                    <button
+                        onClick={handleStopAfterTarget}
+                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg"
+                    >
+                      타이머 종료하기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        )}
+      </div>
   );
 };
 

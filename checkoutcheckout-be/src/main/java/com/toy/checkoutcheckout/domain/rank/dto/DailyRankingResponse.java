@@ -23,6 +23,7 @@ public class DailyRankingResponse {
         private Long userId;
         private String nickname;
         private Long studyTime;  // 초 단위
+        private String characterType;  // 사용자 캐릭터 타입 추가
     }
     
     private LocalDate date;

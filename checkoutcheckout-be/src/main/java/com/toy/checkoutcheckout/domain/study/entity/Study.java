@@ -1,12 +1,12 @@
 package com.toy.checkoutcheckout.domain.study.entity;
 
 import com.toy.checkoutcheckout.domain.user.entity.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

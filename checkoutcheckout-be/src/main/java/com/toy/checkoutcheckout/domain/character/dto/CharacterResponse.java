@@ -15,12 +15,14 @@ import java.time.LocalDate;
 public class CharacterResponse {
     private Long id;
     private String type;
+    private String rarity;
     private LocalDate acquiredDate;
     
     public static CharacterResponse from(CharacterEntity character) {
         return CharacterResponse.builder()
                 .id(character.getId())
                 .type(character.getType())
+                .rarity(character.getRarity())
                 .acquiredDate(character.getAcquiredDate())
                 .build();
     }

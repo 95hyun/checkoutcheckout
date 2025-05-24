@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CharacterAcquireRequest {
     private String characterType;
+    private String rarity;
 }

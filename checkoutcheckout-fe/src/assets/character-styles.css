@@ -1,83 +1,146 @@
 /* 캐릭터 이미지 스타일 */
-/* 모든 가능한 타입의 형식을 포함 (대/소문자, camelCase, snake_case) */
+/* 이 파일은 새로운 캐릭터 이미지에 대한 CSS 스타일을 정의합니다 */
 
-/* 1번: 클레릭(성직자) */
-.character-cleric, .character-CLERIC, .character-Cleric {
-  background-image: url('/characters/checkout_char_1_girl_healer.png');
+/* Common(일반) 등급 캐릭터 */
+.character-common_rabbit, .character-COMMON_RABBIT, .character-CommonRabbit {
+  background-image: url('/characters/checkout_common_rabbit.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 2번: 기사 */
-.character-knight, .character-KNIGHT, .character-Knight {
-  background-image: url('/characters/checkout_char_2_girl_knight.png');
+.character-common_squirrel, .character-COMMON_SQUIRREL, .character-CommonSquirrel {
+  background-image: url('/characters/checkout_common_squirrel.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 3번: 드워프 */
-.character-dwarf, .character-DWARF, .character-Dwarf {
-  background-image: url('/characters/checkout_char_3_man_axe.png');
+.character-common_hedgehog, .character-COMMON_HEDGEHOG, .character-CommonHedgehog {
+  background-image: url('/characters/checkout_common_hedgehog.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 4번: 여성 악마 */
-.character-demonfemale, .character-DEMON_FEMALE, .character-DEMONFEMALE, 
-.character-demon_female, .character-demonFemale, .character-DemonFemale {
-  background-image: url('/characters/checkout_char_4_girl_devil.png');
+.character-common_pigeon, .character-COMMON_PIGEON, .character-CommonPigeon {
+  background-image: url('/characters/checkout_common_pigeon.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 5번: 남성 악마 */
-.character-demonmale, .character-DEMON_MALE, .character-DEMONMALE, 
-.character-demon_male, .character-demonMale, .character-DemonMale {
-  background-image: url('/characters/checkout_char_5_man_devil.png');
+/* Uncommon(고급) 등급 캐릭터 */
+.character-uncommon_cat, .character-UNCOMMON_CAT, .character-UncommonCat {
+  background-image: url('/characters/checkout_uncommon_cat.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 6번: 마법사 */
-.character-wizard, .character-WIZARD, .character-Wizard {
-  background-image: url('/characters/checkout_char_6_girl_magi.png');
+.character-uncommon_dog, .character-UNCOMMON_DOG, .character-UncommonDog {
+  background-image: url('/characters/checkout_uncommon_dog.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 7번: 방패병 */
-.character-shield, .character-SHIELD, .character-Shield {
-  background-image: url('/characters/checkout_char_7_man_sheild.png');
+.character-uncommon_bear, .character-UNCOMMON_BEAR, .character-UncommonBear {
+  background-image: url('/characters/checkout_uncommon_bear.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 8번: 캡틴 */
-.character-captain, .character-CAPTAIN, .character-Captain {
-  background-image: url('/characters/checkout_char_8_man_captin.png');
+.character-uncommon_hamster, .character-UNCOMMON_HAMSTER, .character-UncommonHamster {
+  background-image: url('/characters/checkout_uncommon_hamster.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 9번: 궁수 */
-.character-archer, .character-ARCHER, .character-Archer {
-  background-image: url('/characters/checkout_char_9_girl_archer.png');
+/* Rare(희귀) 등급 캐릭터 */
+.character-rare_wolf, .character-RARE_WOLF, .character-RareWolf {
+  background-image: url('/characters/checkout_rare_wolf.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* 10번: 암살자 */
-.character-assassin, .character-ASSASSIN, .character-Assassin {
-  background-image: url('/characters/checkout_char_10_man_assasin.png');
+.character-rare_fox, .character-RARE_FOX, .character-RareFox {
+  background-image: url('/characters/checkout_rare_fox.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-rare_lion, .character-RARE_LION, .character-RareLion {
+  background-image: url('/characters/checkout_rare_lion.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-rare_penguin, .character-RARE_PENGUIN, .character-RarePenguin {
+  background-image: url('/characters/checkout_rare_penguin.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Epic(영웅) 등급 캐릭터 */
+.character-epic_unicorn, .character-EPIC_UNICORN, .character-EpicUnicorn {
+  background-image: url('/characters/checkout_epic_unicorn.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-epic_dragon, .character-EPIC_DRAGON, .character-EpicDragon {
+  background-image: url('/characters/checkout_epic_dragon.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-epic_phoneix, .character-EPIC_PHONEIX, .character-EpicPhoneix {
+  background-image: url('/characters/checkout_epic_phoneix.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-epic_whitetiger, .character-EPIC_WHITETIGER, .character-EpicWhitetiger {
+  background-image: url('/characters/checkout_epic_whitetiger.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Legendary(전설) 등급 캐릭터 */
+.character-legendary_doge, .character-LEGENDARY_DOGE, .character-LegendaryDoge {
+  background-image: url('/characters/checkout_legendary_doge.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-legendary_pepe, .character-LEGENDARY_PEPE, .character-LegendaryPepe {
+  background-image: url('/characters/checkout_legendary_pepe.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-legendary_chillguy, .character-LEGENDARY_CHILLGUY, .character-LegendaryChillguy {
+  background-image: url('/characters/checkout_legendary_chillguy.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.character-legendary_tralellotralala, .character-LEGENDARY_TRALELLOTRALALA, .character-LegendaryTralellotralala {
+  background-image: url('/characters/checkout_legendary_tralellotralala.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -132,12 +195,12 @@
   right: -100%;
   bottom: -100%;
   background: linear-gradient(
-    135deg, 
-    rgba(255, 255, 255, 0) 0%, 
-    rgba(255, 255, 255, 0.25) 25%, 
-    rgba(255, 255, 255, 0.5) 50%, 
-    rgba(255, 255, 255, 0.25) 75%, 
-    rgba(255, 255, 255, 0) 100%
+          135deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.25) 25%,
+          rgba(255, 255, 255, 0.5) 50%,
+          rgba(255, 255, 255, 0.25) 75%,
+          rgba(255, 255, 255, 0) 100%
   );
   pointer-events: none;
   opacity: 0.5;
@@ -155,6 +218,381 @@
   0% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
   100% { transform: translateY(0); }
+}
+
+/* 희귀도 관련 CSS 변수 */
+:root {
+  --rarity-common-color: #aaa;
+  --rarity-uncommon-color: #4CAF50;
+  --rarity-rare-color: #2196F3;
+  --rarity-epic-color: #9C27B0;
+  --rarity-legendary-color: #FF9800;
+}
+
+/* 희귀도 관련 스타일 */
+/* 희귀도별 보더 색상 */
+.character-rarity-common {
+  border: 2px solid var(--rarity-common-color); /* 회색 */
+  box-shadow: 0 0 10px rgba(170, 170, 170, 0.5);
+}
+
+.character-rarity-uncommon {
+  border: 2px solid var(--rarity-uncommon-color); /* 녹색 */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.character-rarity-rare {
+  border: 2px solid var(--rarity-rare-color); /* 파란색 */
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.character-rarity-rare::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0) 100%
+  );
+  animation: rare-shine 3s infinite;
+  pointer-events: none;
+}
+
+.character-rarity-epic {
+  border: 3px solid var(--rarity-epic-color); /* 보라색 테두리 두껍게 */
+  box-shadow: 0 0 15px rgba(156, 39, 176, 0.6);
+  animation: epic-pulse 2s infinite ease-in-out;
+  position: relative;
+  z-index: 5;
+}
+
+/* 영웅 등급 내부 광채 효과 */
+.character-rarity-epic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(156, 39, 176, 0.2) 0%, rgba(156, 39, 176, 0) 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 영웅 등급 외곽 빛 효과 */
+.character-rarity-epic::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+  rgba(156, 39, 176, 0) 0%,
+  rgba(156, 39, 176, 0.5) 50%,
+  rgba(156, 39, 176, 0) 100%
+  );
+  animation: epic-border-shine 4s infinite linear;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes epic-border-shine {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.character-rarity-legendary {
+  border: 4px solid var(--rarity-legendary-color); /* 주황색 테두리 더 두껍게 */
+  box-shadow: 0 0 20px rgba(255, 152, 0, 0.8);
+  animation: legendary-glow 2s infinite alternate;
+  position: relative;
+  z-index: 5;
+}
+
+/* 전설 등급 내부 광채 효과 */
+.character-rarity-legendary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.3) 0%, rgba(255, 152, 0, 0) 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 전설 등급 입자 효과 */
+.character-rarity-legendary::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  background-image:
+          radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 3%),
+          radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 3%),
+          radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 3%),
+          radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 3%),
+          radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 3%);
+  animation: legendary-particles 5s infinite linear;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes legendary-particles {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* 희귀도 배지 스타일 */
+.rarity-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  z-index: 5;
+}
+
+.rarity-badge-common {
+  background-color: var(--rarity-common-color); /* 회색 */
+}
+
+.rarity-badge-uncommon {
+  background-color: var(--rarity-uncommon-color); /* 녹색 */
+}
+
+.rarity-badge-rare {
+  background-color: var(--rarity-rare-color); /* 파란색 */
+  background-image: linear-gradient(
+          90deg,
+          var(--rarity-rare-color) 0%,
+          #64b5f6 50%,
+          var(--rarity-rare-color) 100%
+  );
+  background-size: 200% auto;
+  animation: rare-shine 3s infinite;
+}
+
+.rarity-badge-epic {
+  background-color: var(--rarity-epic-color); /* 보라색 */
+  background-image: linear-gradient(
+          90deg,
+          #9C27B0 0%,
+          #CE93D8 50%,
+          #9C27B0 100%
+  );
+  background-size: 200% auto;
+  box-shadow: 0 0 8px rgba(156, 39, 176, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  animation: rare-shine 4s infinite;
+}
+
+.rarity-badge-legendary {
+  background-color: var(--rarity-legendary-color); /* 주황색 */
+  background-image: linear-gradient(
+          90deg,
+          #FF6F00 0%,
+          #FFCA28 50%,
+          #FF6F00 100%
+  );
+  background-size: 200% auto;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  animation: legendary-badge-glow 1.5s infinite alternate, rare-shine 5s infinite;
+  letter-spacing: 0.5px;
+}
+
+@keyframes legendary-glow {
+  from {
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.7);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(255, 152, 0, 0.9);
+  }
+}
+
+@keyframes legendary-badge-glow {
+  from {
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
+  }
+  to {
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.9);
+  }
+}
+
+@keyframes epic-pulse {
+  0% { box-shadow: 0 0 10px rgba(156, 39, 176, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(156, 39, 176, 0.7); }
+  100% { box-shadow: 0 0 10px rgba(156, 39, 176, 0.5); }
+}
+
+@keyframes rare-shine {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 모달용 특수 효과 애니메이션 */
+@keyframes modal-legendary-particles {
+  0% { transform: rotate(0deg); opacity: 0.5; }
+  50% { transform: rotate(180deg); opacity: 0.9; }
+  100% { transform: rotate(360deg); opacity: 0.5; }
+}
+
+@keyframes modal-epic-aura {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes color-cycle {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* 프로필 이미지 희귀도 스타일 */
+.profile-rarity-common {
+  border: 2px solid var(--rarity-common-color);
+  box-shadow: 0 0 5px rgba(170, 170, 170, 0.3);
+}
+
+.profile-rarity-uncommon {
+  border: 2px solid var(--rarity-uncommon-color);
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+}
+
+.profile-rarity-rare {
+  border: 2px solid var(--rarity-rare-color);
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-rare-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+          90deg,
+          rgba(33, 150, 243, 0) 0%,
+          rgba(33, 150, 243, 0.2) 50%,
+          rgba(33, 150, 243, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: rare-shine 4s infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.profile-rarity-epic {
+  border: 3px solid var(--rarity-epic-color);
+  box-shadow: 0 0 12px rgba(156, 39, 176, 0.6);
+  animation: epic-pulse 3s infinite ease-in-out;
+  position: relative;
+}
+
+.profile-epic-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(156, 39, 176, 0.2) 0%, rgba(156, 39, 176, 0) 70%);
+  pointer-events: none;
+  animation: epic-pulse 2s infinite alternate;
+  z-index: 2;
+}
+
+.profile-rarity-legendary {
+  border: 4px solid var(--rarity-legendary-color);
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.7);
+  animation: legendary-glow 2s infinite alternate;
+  position: relative;
+}
+
+.profile-legendary-effect {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background-image:
+          radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 10%),
+          radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 10%),
+          radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 10%),
+          radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.8) 0%, rgba(255, 215, 0, 0) 10%);
+  animation: legendary-particles 7s infinite linear;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 작은 프로필 이미지에 맞는 여분의 스타일 */
+.w-8.h-8.profile-rarity-epic {
+  border-width: 2px;
+  box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+}
+
+.w-8.h-8.profile-rarity-legendary {
+  border-width: 2px;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+}
+
+/* 프로필 희귀도 배지 */
+.profile-rarity-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.profile-rarity-badge-common {
+  background-color: var(--rarity-common-color);
+}
+
+.profile-rarity-badge-uncommon {
+  background-color: var(--rarity-uncommon-color);
+}
+
+.profile-rarity-badge-rare {
+  background: linear-gradient(45deg, var(--rarity-rare-color), #64b5f6);
+}
+
+.profile-rarity-badge-epic {
+  background: linear-gradient(45deg, var(--rarity-epic-color), #CE93D8);
+  box-shadow: 0 0 4px rgba(156, 39, 176, 0.7);
+}
+
+.profile-rarity-badge-legendary {
+  background: linear-gradient(45deg, #FF6F00, #FFCA28);
+  box-shadow: 0 0 5px rgba(255, 152, 0, 0.8);
+  animation: legendary-badge-glow 1.5s infinite alternate;
 }
 
 /* 모달 스타일 */
@@ -216,12 +654,12 @@
 /* 홀로그램 효과 */
 .holographic {
   background: linear-gradient(
-    135deg,
-    rgba(255, 0, 128, 0.1) 0%,
-    rgba(255, 140, 0, 0.1) 25%,
-    rgba(0, 255, 0, 0.1) 50%,
-    rgba(0, 140, 255, 0.1) 75%,
-    rgba(128, 0, 255, 0.1) 100%
+          135deg,
+          rgba(255, 0, 128, 0.1) 0%,
+          rgba(255, 140, 0, 0.1) 25%,
+          rgba(0, 255, 0, 0.1) 50%,
+          rgba(0, 140, 255, 0.1) 75%,
+          rgba(128, 0, 255, 0.1) 100%
   );
   mix-blend-mode: overlay;
 }

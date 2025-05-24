@@ -1,10 +1,10 @@
 import apiClient from './apiClient';
-import { Character } from '../types';
+import { Character, Rarity } from '../types';
 
 export const characterApi = {
   // 캐릭터 획득
-  acquireCharacter: async (characterType: string): Promise<Character> => {
-    const response = await apiClient.post<{data: Character}>('/api/characters/acquire', { characterType });
+  acquireCharacter: async (characterType: string, rarity?: Rarity): Promise<Character> => {
+    const response = await apiClient.post<{data: Character}>('/api/characters/acquire', { characterType, rarity });
     return response.data.data;
   },
   

@@ -4,13 +4,13 @@ import com.toy.checkoutcheckout.domain.study.dto.*;
 import com.toy.checkoutcheckout.domain.study.service.StudyService;
 import com.toy.checkoutcheckout.global.auth.CurrentUser;
 import com.toy.checkoutcheckout.global.dto.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

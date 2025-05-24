@@ -21,7 +21,7 @@ public class UserResponse {
                 .id(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
-                .characterType(user.getCharacterType()) // characterType으로 필드명 변경
+                .characterType(user.getCharacterType())
                 .build();
     }
 }

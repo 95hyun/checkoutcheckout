@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect, lazy, Suspense } from 'react';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -14,7 +14,26 @@ import StudyEditPage from './pages/StudyEditPage';
 import StudyJoinPage from './pages/StudyJoinPage';
 import { authApi } from './api/authApi';
 import useAuthStore from './store/authStore';
+import Loading from './components/Loading';
 import './App.css';
+
+// 로딩 컴포넌트
+const LoadingFallback = () => (
+  <div className="flex justify-center items-center min-h-screen">
+    <Loading size="lg" />
+  </div>
+);
+
+// 스크롤 관리 컴포넌트
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+};
 
 function App() {
   const { isAuthenticated, setUser } = useAuthStore();
@@ -36,24 +55,27 @@ function App() {
   
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/ranking" element={<RankingPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        
-        {/* 스터디 관련 라우트 */}
-        <Route path="/studies" element={<StudiesPage />} />
-        <Route path="/studies/create" element={<StudyCreatePage />} />
-        <Route path="/studies/edit/:studyId" element={<StudyEditPage />} />
-        <Route path="/studies/join/:studyId" element={<StudyJoinPage />} />
-        <Route path="/studies/:studyId" element={<StudyDetailPage />} />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ScrollToTop />
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          
+          {/* 스터디 관련 라우트 */}
+          <Route path="/studies" element={<StudiesPage />} />
+          <Route path="/studies/create" element={<StudyCreatePage />} />
+          <Route path="/studies/edit/:studyId" element={<StudyEditPage />} />
+          <Route path="/studies/join/:studyId" element={<StudyJoinPage />} />
+          <Route path="/studies/:studyId" element={<StudyDetailPage />} />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

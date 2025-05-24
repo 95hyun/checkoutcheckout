@@ -7,6 +7,8 @@ interface AuthStore extends AuthState {
   signup: (userData: SignupRequest) => Promise<void>;
   logout: () => void;
   setUser: (user: User) => void;
+  setCharacterAsProfile: (characterType: string) => Promise<void>;
+  removeProfileImage: () => Promise<void>;
 }
 
 const useAuthStore = create<AuthStore>((set) => ({
@@ -49,6 +51,26 @@ const useAuthStore = create<AuthStore>((set) => ({
   setUser: (user) => {
     set({ user });
   },
+
+  setCharacterAsProfile: async (characterType) => {
+    try {
+      const updatedUser = await authApi.setCharacterAsProfile(characterType);
+      set({ user: updatedUser });
+    } catch (error) {
+      console.error('Setting character as profile failed:', error);
+      throw error;
+    }
+  },
+
+  removeProfileImage: async () => {
+    try {
+      const updatedUser = await authApi.removeProfileImage();
+      set({ user: updatedUser });
+    } catch (error) {
+      console.error('Removing profile image failed:', error);
+      throw error;
+    }
+  }
 }));
 
 export default useAuthStore;

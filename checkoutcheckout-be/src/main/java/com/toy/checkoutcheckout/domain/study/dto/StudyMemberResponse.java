@@ -17,7 +17,7 @@ public class StudyMemberResponse {
     private Long id;
     private Long userId;
     private String nickname;
-    private String profileImage;
+    private String characterType;
     private Boolean isAdmin;
     private Boolean isOwner;
     private LocalDateTime joinedAt;
@@ -27,7 +27,7 @@ public class StudyMemberResponse {
                 .id(member.getId())
                 .userId(member.getUser().getId())
                 .nickname(member.getUser().getNickname())
-                .profileImage(member.getUser().getProfileImage())
+                .characterType(member.getUser().getCharacterType())
                 .isAdmin(member.getIsAdmin())
                 .isOwner(isOwner)
                 .joinedAt(member.getJoinedAt())

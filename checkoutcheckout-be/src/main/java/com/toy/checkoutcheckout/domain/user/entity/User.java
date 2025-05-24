@@ -1,5 +1,6 @@
 package com.toy.checkoutcheckout.domain.user.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +34,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String nickname;
-
-    private String profileImage;
     
     // 현재 사용자의 캐릭터 타입 (character는 MySQL 예약어이므로 characterType으로 변경)
     @Column(name = "character_type")
@@ -54,6 +52,11 @@ public class User implements UserDetails {
     // 캐릭터 설정 메서드
     public void setCharacterType(String characterType) {
         this.characterType = characterType;
+    }
+    
+    // 프로필 이미지 제거 메서드
+    public void clearProfileImage() {
+        this.characterType = null;
     }
     
     // 이전 메서드와의 호환성을 위한 메서드

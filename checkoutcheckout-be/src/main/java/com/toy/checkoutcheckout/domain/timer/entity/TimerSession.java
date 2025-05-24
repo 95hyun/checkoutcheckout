@@ -1,12 +1,12 @@
 package com.toy.checkoutcheckout.domain.timer.entity;
 
 import com.toy.checkoutcheckout.domain.user.entity.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -9,8 +9,8 @@ import com.toy.checkoutcheckout.domain.study.repository.StudyRepository;
 import com.toy.checkoutcheckout.domain.timer.repository.TimerSessionRepository;
 import com.toy.checkoutcheckout.domain.user.entity.User;
 import com.toy.checkoutcheckout.domain.user.repository.UserRepository;
-import com.toy.checkoutcheckout.global.exception.ForbiddenException;
-import com.toy.checkoutcheckout.global.exception.NotFoundException;
+import com.toy.checkoutcheckout.global.error.ForbiddenException;
+import com.toy.checkoutcheckout.global.error.NotFoundException;
 import com.toy.checkoutcheckout.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,20 @@ public class RankService {
     public DailyRankingResponse getDailyRanking(LocalDate date) {
         List<Object[]> results = timerSessionRepository.findDailyRankingByDate(date);
         
+        // 사용자 ID 목록 수집
+        List<Long> userIds = new ArrayList<>();
+        for (Object[] result : results) {
+            Long userId = (Long) result[0];
+            userIds.add(userId);
+        }
+        
+        // 한 번의 쿼리로 사용자 정보 가져오기
+        List<User> users = userRepository.findAllById(userIds);
+        Map<Long, User> userMap = new HashMap<>();
+        for (User user : users) {
+            userMap.put(user.getId(), user);
+        }
+        
         List<DailyRankingResponse.RankEntry> rankings = new ArrayList<>();
         int rank = 1;
         
@@ -41,11 +57,19 @@ public class RankService {
             String nickname = (String) result[1];
             Long studyTime = (Long) result[2];
             
+            // 사용자의 캐릭터 타입 가져오기
+            String characterType = null;
+            User user = userMap.get(userId);
+            if (user != null) {
+                characterType = user.getCharacterType();
+            }
+            
             rankings.add(DailyRankingResponse.RankEntry.builder()
                     .rank(rank++)
                     .userId(userId)
                     .nickname(nickname)
                     .studyTime(studyTime)
+                    .characterType(characterType)
                     .build());
         }
         
@@ -163,6 +187,20 @@ public class RankService {
         
         List<Object[]> results = timerSessionRepository.findDailyRankingByDateAndStudy(date, studyId);
         
+        // 사용자 ID 목록 수집
+        List<Long> userIds = new ArrayList<>();
+        for (Object[] result : results) {
+            Long memberId = (Long) result[0];
+            userIds.add(memberId);
+        }
+        
+        // 한 번의 쿼리로 사용자 정보 가져오기
+        List<User> users = userRepository.findAllById(userIds);
+        Map<Long, User> userMap = new HashMap<>();
+        for (User member : users) {
+            userMap.put(member.getId(), member);
+        }
+        
         List<StudyMemberRankingResponse.RankEntry> rankings = new ArrayList<>();
         int rank = 1;
         
@@ -171,11 +209,19 @@ public class RankService {
             String nickname = (String) result[1];
             Long studyTime = (Long) result[2];
             
+            // 사용자의 캐릭터 타입 가져오기
+            String characterType = null;
+            User member = userMap.get(memberId);
+            if (member != null) {
+                characterType = member.getCharacterType();
+            }
+            
             rankings.add(StudyMemberRankingResponse.RankEntry.builder()
                     .rank(rank++)
                     .userId(memberId)
                     .nickname(nickname)
                     .studyTime(studyTime)
+                    .characterType(characterType)
                     .formattedStudyTime(TimeUtils.formatMillisToTimeString(studyTime))
                     .build());
         }
@@ -213,6 +259,20 @@ public class RankService {
         
         List<Object[]> results = timerSessionRepository.findWeeklyRankingByDateRangeAndStudy(startDate, endDate, studyId);
         
+        // 사용자 ID 목록 수집
+        List<Long> userIds = new ArrayList<>();
+        for (Object[] result : results) {
+            Long memberId = (Long) result[0];
+            userIds.add(memberId);
+        }
+        
+        // 한 번의 쿼리로 사용자 정보 가져오기
+        List<User> users = userRepository.findAllById(userIds);
+        Map<Long, User> userMap = new HashMap<>();
+        for (User member : users) {
+            userMap.put(member.getId(), member);
+        }
+        
         List<StudyMemberRankingResponse.RankEntry> rankings = new ArrayList<>();
         int rank = 1;
         
@@ -221,11 +281,19 @@ public class RankService {
             String nickname = (String) result[1];
             Long studyTime = (Long) result[2];
             
+            // 사용자의 캐릭터 타입 가져오기
+            String characterType = null;
+            User member = userMap.get(memberId);
+            if (member != null) {
+                characterType = member.getCharacterType();
+            }
+            
             rankings.add(StudyMemberRankingResponse.RankEntry.builder()
                     .rank(rank++)
                     .userId(memberId)
                     .nickname(nickname)
                     .studyTime(studyTime)
+                    .characterType(characterType)
                     .formattedStudyTime(TimeUtils.formatMillisToTimeString(studyTime))
                     .build());
         }
@@ -265,6 +333,20 @@ public class RankService {
         
         List<Object[]> results = timerSessionRepository.findMonthlyRankingByYearMonthAndStudy(year, month, studyId);
         
+        // 사용자 ID 목록 수집
+        List<Long> userIds = new ArrayList<>();
+        for (Object[] result : results) {
+            Long memberId = (Long) result[0];
+            userIds.add(memberId);
+        }
+        
+        // 한 번의 쿼리로 사용자 정보 가져오기
+        List<User> users = userRepository.findAllById(userIds);
+        Map<Long, User> userMap = new HashMap<>();
+        for (User member : users) {
+            userMap.put(member.getId(), member);
+        }
+        
         List<StudyMemberRankingResponse.RankEntry> rankings = new ArrayList<>();
         int rank = 1;
         
@@ -273,11 +355,19 @@ public class RankService {
             String nickname = (String) result[1];
             Long studyTime = (Long) result[2];
             
+            // 사용자의 캐릭터 타입 가져오기
+            String characterType = null;
+            User member = userMap.get(memberId);
+            if (member != null) {
+                characterType = member.getCharacterType();
+            }
+            
             rankings.add(StudyMemberRankingResponse.RankEntry.builder()
                     .rank(rank++)
                     .userId(memberId)
                     .nickname(nickname)
                     .studyTime(studyTime)
+                    .characterType(characterType)
                     .formattedStudyTime(TimeUtils.formatMillisToTimeString(studyTime))
                     .build());
         }

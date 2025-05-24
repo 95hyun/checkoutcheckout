@@ -1,20 +1,7 @@
 version: '3'
 
 services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-      - redis
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/checkoutcheckout?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_REDIS_HOST=redis
-      - SPRING_REDIS_PORT=6379
-
+  # app 서비스를 제거하고 데이터베이스 서비스만 유지
   mysql:
     image: mysql:8.0
     ports:

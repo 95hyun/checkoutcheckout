@@ -35,6 +35,19 @@ export const formatSecondsToReadable = (seconds: number): string => {
   return result.trim();
 };
 
+// 시간 형식 변환 (초 -> 00:00:00) - Timer 컴포넌트용
+export const formatTimeDisplay = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return [
+    hours.toString().padStart(2, '0'),
+    minutes.toString().padStart(2, '0'),
+    remainingSeconds.toString().padStart(2, '0')
+  ].join(':');
+};
+
 // 공부 시간에 따른 색상 계산 (GitHub 잔디 스타일)
 export const getIntensityColor = (durationInSeconds: number): string => {
   // 최대 8시간(28800초)를 기준으로 색상 강도 계산

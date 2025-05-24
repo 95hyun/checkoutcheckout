@@ -224,7 +224,7 @@ const StudiesPage: React.FC = () => {
               onClick={handleCreateStudy}
               className="btn-primary"
             >
-              <FaPlus className="mr-2" /> 스터디 개설하기
+              <FaPlus className="inline mr-2" /> 스터디 개설하기
             </button>
           </div>
         )}

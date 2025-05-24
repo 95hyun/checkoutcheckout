@@ -33,4 +33,31 @@ export const authApi = {
       };
     }
   },
+
+  // 캐릭터를 프로필 이미지로 설정
+  setCharacterAsProfile: async (characterType: string): Promise<User> => {
+    // API 요청 전에 현재 헤더와 데이터 로깅
+    console.log('Setting character as profile with data:', { characterType });
+    console.log('With headers:', {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    
+    try {
+      const response = await apiClient.post<{data: User}>('/api/auth/profile/character', {
+        characterType
+      });
+      console.log('Set character as profile response:', response);
+      return response.data.data;
+    } catch (error) {
+      console.error('Set character as profile API error:', error);
+      throw error;
+    }
+  },
+
+  // 프로필 이미지 제거
+  removeProfileImage: async (): Promise<User> => {
+    const response = await apiClient.delete<{data: User}>('/api/auth/profile/image');
+    return response.data.data;
+  }
 };
